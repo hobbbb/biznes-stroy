@@ -81,6 +81,12 @@
                                 <input type="text" id="js_price_cfg_products_name" name="products_name" value="[% (form.id ? form.products_name : 1) | html %]" class="span12">
                             </div>
                         </div>
+                        <div class="control-group [% 'error' IF err.stop_symbol %]">
+                            <label class="control-label" for="stop_symbol">Стоп-символ для названия</label>
+                            <div class="controls">
+                                <input type="text" id="js_price_cfg_stop_symbol" name="stop_symbol" value="[% form.stop_symbol | html %]" class="span12">
+                            </div>
+                        </div>
                         <div class="control-group [% 'error' IF err.products_price %]">
                             <label class="control-label" for="products_price">Цена товара (№ колонки)</label>
                             <div class="controls">
@@ -213,11 +219,11 @@
 					<tr [% 'class="price_upload_odd"' IF loop.index % 2 == 1 %]>
 						<td>[% p.row %]</td>
                         <td>
-                            [% IF !p.id_error AND !p.from_db %]
+                            [% UNLESS p.from_db %]
                                 [%-
                                     IF form.price_diff_koef AND p.id;
                                         USE Math;
-                                        SET price_db = p.price_db ? p.price_db : 0.001;
+                                        SET price_db = p.price ? p.price : 0.001;
                                         SET products_price = p.products_price ? p.products_price : 0.001;
                                         SET diff = Math.abs(products_price / price_db);
                                     END;
@@ -241,17 +247,10 @@
 						<td>
                             <input type="hidden" name="[% category_index %].product.[% product_index %].id" value="[% p.id %]">
                             <input type="hidden" name="[% category_index %].product.[% product_index %].supplier" value="[% form.supplier %]">
-							[% IF p.id_error %]
-								<span class="red">[% p.id_error.msg %]</span>
-							[% ELSE %]
-								[% p.id ? p.id : '<div class="red">Новый</div>' %]
-
-                                [% IF p.from_db %]
-                                    <div class="bold">Товар из базы</div>
-								[% ELSIF p.id AND p.id != p.id_in_category %]
-									<div class="red">Товар не из этой категории</div>
-								[% END %]
-							[% END %]
+                            [% p.id %]
+							[% '<div class="red">Новый</div>' UNLESS p.id %]
+                            [% '<div class="red">Товар не из этой категории</div>' IF p.id AND !p.from_db AND !p.category_matched %]
+                            [% '<div class="bold">Товар из базы</div>' IF p.from_db %]
 						</td>
 						<td>
                             [% IF p.from_db %]
@@ -267,7 +266,7 @@
                                 <input type="text" class="price_upload" size="6" name="[% category_index %].product.[% product_index %].products_price" value="[% p.products_price %]">
                             [% END %]
                         </td>
-                        <td>[% p.price_db %]</td>
+                        <td>[% p.price %]</td>
 						<td>[% IF p.img %]<img src="/resize/40/products/[% p.img %]/" class="img-rounded">[% END %]<input type="file" name="[% category_index %].product.[% product_index %].file"></td>
                         <td>
                             [% IF p.from_db %]

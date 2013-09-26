@@ -11,7 +11,7 @@ my $cfg_path        = path(config->{public}, 'price.cfg');
 my $categories_dir  = path(config->{public}, 'upload', 'categories');
 my $products_dir    = path(config->{public}, 'upload', 'products');
 my @db_fields = qw/id name worksheet start_row end_row overjump_row only_row
-categories_name products_name products_price products_short_descr
+categories_name products_name stop_symbol products_price products_short_descr
 main_category uniq change_products_price price_diff_koef supplier comments/;
 
 prefix '/admin/price' => sub {
@@ -132,7 +132,7 @@ prefix '/admin/price' => sub {
                             for my $r (@rows) {
                                 $i++;
 
-                                if ($r->{categories_name}) {
+                                if ($r->{categories_name}) { # Заполняются категории
                                     if ($rows[$i]->{categories_name} && !$vars->{only_categories}) {
                                         next;
                                     }
@@ -141,18 +141,19 @@ prefix '/admin/price' => sub {
                                     $cat->{row} = $r->{row};
                                     push @{$vars->{categories_name}}, $cat;
                                 }
-                                elsif ($r->{products_name}) {
+                                elsif ($r->{products_name}) { # Заполняются товары
                                     my $last_cat = 0;
                                     if ($vars->{categories_name}) {
                                         $last_cat = scalar @{$vars->{categories_name}} - 1;
                                         $r->{categories_id} = $vars->{categories_name}->[$last_cat]->{id};
                                     }
 
-                                    $r = _check_product($CFG, $r);
-                                    push @{$vars->{categories_name}->[$last_cat]->{products}}, $r;
+                                    my $list = _check_product($CFG, $r);
+                                    push @{$vars->{categories_name}->[$last_cat]->{products}}, @$list;
                                 }
                             }
 
+                            # Вытягиваем товары из базы из этих категорий, для возможного их удаления
                             for my $cat (@{$vars->{categories_name}}) {
                                 if ($cat->{id}) {
                                     my @products = (0);
@@ -267,7 +268,7 @@ prefix '/admin/price' => sub {
                             _upload_product($p);
                         }
                         elsif ($p->{delete}) {
-                            Catalog::delete_product($p->{id});
+                            Admin::Catalog::delete_product($p->{id});
                         }
                     }
                 }
@@ -306,27 +307,54 @@ sub _check_product {
         products_name => 'name',
     );
 
-    my $where = {};
+    my $where;
     for my $f (split/\+/, $cfg->{uniq}) {
-        $where->{$alias{$f}} = $row->{$f} if $alias{$f};
+        next unless $alias{$f};
+
+        if ($cfg->{stop_symbol}) {
+            # $where->{$alias{$f}} = { like => "$row->{$f}$cfg->{stop_symbol}%" };
+            $where = "$alias{$f} LIKE " . database->quote("$row->{$f}$cfg->{stop_symbol}%") . " OR $alias{$f} = " . database->quote($row->{$f});
+        }
+        else {
+            $where->{$alias{$f}} = $row->{$f};
+        }
     }
 
-    my $product_id = [ database->quick_select('products', $where) ];
-    if (defined $product_id->[0] and scalar @$product_id > 1) {
-        $row->{id_error} = { msg => 'many_id', id => $product_id };
-        return $row;
+    my @list = ();
+
+    my $products = [ database->quick_select('products', $where) ];
+    if (@$products) { # Совпадения в базе есть
+        for my $p (@$products) {
+            my $img = database->quick_lookup('products_images', { products_id => $p->{id} }, 'image', { order_by => 'id' });
+
+            if ($row->{categories_id} and $p->{id}) {
+                $p->{category_matched} = database->quick_lookup('products', { categories_id => $row->{categories_id}, id => $p->{id} }, 'id');
+            }
+
+            push @list, {
+                id                   => $p->{id},
+                price                => $p->{price},
+                categories_id        => $p->{categories_id},
+                category_matched     => $p->{category_matched},
+                products_name        => $p->{name},
+                img                  => $img,
+                row                  => $row->{row},
+                products_price       => $row->{products_price},
+                products_short_descr => $row->{products_short_descr},
+            };
+        }
     }
     else {
-        $row->{id} = $product_id->[0]->{id};
-        $row->{price_db} = $product_id->[0]->{price};
         $row->{img} = database->quick_lookup('products_images', { products_id => $row->{id} }, 'image', { order_by => 'id' });
+
+        if ($row->{categories_id} and $row->{id}) {
+            $row->{category_matched} = database->quick_lookup('products', { categories_id => $row->{categories_id}, id => $row->{id} }, 'id');
+        }
+
+        push @list, $row;
     }
 
-    if ($row->{categories_id} and $row->{id}) {
-        $row->{id_in_category} = database->quick_lookup('products', { categories_id => $row->{categories_id}, id => $row->{id} }, 'id');
-    }
-
-    return $row;
+    return \@list;
 }
 
 sub _upload_category {
