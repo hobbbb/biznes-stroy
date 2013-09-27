@@ -63,6 +63,8 @@ sub make_alias {
 sub email {
     my %params = @_;
 
+    $params{to} = 'p.vasilyev@corp.mail.ru' if config->{environment} ne 'production';
+
     utf8::encode($params{body});
     $params{$_} = encode('MIME-Header', $params{$_}) for qw(to from subject);
 
