@@ -55,7 +55,7 @@ prefix '/shopping_cart' => sub {
 
             my $cart = cookie 'cart';
             my $shopping_cart = from_json($cart) if $cart;
-            $p->{err}->{no_products} = 1 unless scalar @$shopping_cart;
+            $p->{err}->{no_products} = 1 unless $shopping_cart;
 
             unless (scalar keys %{$p->{err}}) {
                 my $order = { data => $p->{form} };
