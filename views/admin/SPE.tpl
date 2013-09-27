@@ -32,7 +32,7 @@
                             END;
                         END;
                     -%]
-                    <td><a href="[% script %]edit/[% i.id %]/"><i class="icon-pencil"></i></a></td>
+                    <td><a href="[% script %]edit/[% i.id %]/?[% request.env.QUERY_STRING %]"><i class="icon-pencil"></i></a></td>
                     <td><a href="javascript: void(0)" data-url="[% script %]del/[% i.id %]/" class="js_delete"><i class="icon-trash"></i></a></td>
                 </tr>
             [% END %]
@@ -68,12 +68,27 @@
                         <label class="control-label" for="[% f.name %]">[% f.descr %]</label>
                         <div class="controls"><input type="text" id="[% f.name %]" name="[% f.name %]" value="[% form.${f.name} | html %]" placeholder="[% f.descr %]" class="span12" [% 'disabled' IF f.readonly %]></div>
                     </div>
+                [% ELSIF f.type == 'select' %]
+                    <div class="control-group [% 'error' IF err.${f.name} %]">
+                        <label class="control-label" for="[% f.name %]">[% f.descr %]</label>
+                        <div class="controls">
+                            <select name="[% f.name %]" id="[% f.name %]" class="span12">
+                            [%-
+                                FOR val IN f.vals;
+                                    SET v = val.keys.0;
+                                    SET n = val.${val.keys.0};
+                            -%]
+                                <option value="[% v %]" [% 'selected' IF form.${f.name} == v %]>[% n %]</option>
+                            [% END %]
+                            </select>
+                        </div>
+                    </div>
                 [% END %]
             [% END %]
             <div class="control-group">
                 <div class="controls">
                   <button type="submit" class="btn btn-primary">Сохранить</button>
-                  [% IF form.id %]<a href="[% script %]" class="btn">Отмена</a>[% END %]
+                  [% IF form.id %]<a href="[% script %]?[% request.env.QUERY_STRING %]" class="btn">Отмена</a>[% END %]
                 </div>
             </div>
         </fieldset>
