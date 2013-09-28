@@ -165,27 +165,27 @@ function delivery_refresh() {
             var delivery_price = $(this).data('delivery_price') * 1;
             var delivery_mkad_price = $(this).data('delivery_mkad_price') * 1;
 
-            if (delivery_price) {
-                if (delivery_mkad_price) {
-                    var km = $('#js_mkad_length').val();
-                    delivery_price = km ? delivery_price + delivery_mkad_price * km : delivery_price;
-                    $('.js_delivery_mkad').show();
-                    $('#js_delivery_mkad_price').show();
-                    $('#js_delivery_mkad_price').text(', ' + delivery_price + ' руб.');
+            if (delivery_price && delivery_mkad_price) {
+                var km = $('#js_mkad_length').val();
+                delivery_price = km ? delivery_price + delivery_mkad_price * km : delivery_price;
+                $('.js_delivery_mkad').show();
+                $('#js_delivery_mkad_price').show();
+                $('#js_delivery_mkad_price').text(', ' + delivery_price + ' руб.');
+            }
+
+            var total = $('#js_shopping_cart_total').html() * 1;
+            var $total_with_delivery_div = $('#js_total_with_delivery');
+            $total_with_delivery_div.hide();
+            if (total) {
+                if (total < GLOB_delivery_min_sum) {
+                    $('.js_shipping_with_delivery').hide();
+                    return;
+                }
+                else {
+                    $('.js_shipping_with_delivery').show();
                 }
 
-                var total = $('#js_shopping_cart_total').html() * 1;
-                var $total_with_delivery_div = $('#js_total_with_delivery');
-                $total_with_delivery_div.hide();
-                if (total) {
-                    if (total < GLOB_delivery_min_sum) {
-                        $('.js_shipping_with_delivery').hide();
-                        return;
-                    }
-                    else {
-                        $('.js_shipping_with_delivery').show();
-                    }
-
+                if (delivery_price) {
                     var price = total + delivery_price;
                     $total_with_delivery_div.find('strong').text(price + ' руб.');
                     $total_with_delivery_div.show();
@@ -221,7 +221,7 @@ function cart_refresh() {
                 for (var i = 0; i < ans.length; i++) {
                     sum += ans[i]['qnt'] * ans[i]['price'];
                 }
-                $('#js_shopping_cart_total').html(sum);
+                $('#js_shopping_cart_total').html(sum.toFixed(2));
 
                 delivery_refresh();
             }

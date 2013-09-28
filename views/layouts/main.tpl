@@ -16,7 +16,7 @@
     <script type="text/javascript" src="/javascripts/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="/javascripts/jquery-ui.js?v=2013_05_22_23_50"></script>
     <script type="text/javascript" src="/javascripts/jinit.js?v=2013_08_30_14_00"></script>
-    <script type="text/javascript" src="/javascripts/main.js?v=2013_09_20_12_00"></script>
+    <script type="text/javascript" src="/javascripts/main.js?v=2013_09_28_09_00"></script>
 
     <!--[if lte IE 7]><link href="/css/ie7.css" rel="stylesheet" type="text/css" /><![endif]-->
     <!--[if lte IE 8]>
