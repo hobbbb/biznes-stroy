@@ -18,12 +18,12 @@
             <table class="table table-condensed">
                 <thead>
                     <tr>
-                        <th>Отображать <input type="checkbox" class="js_checkbox_for_many_enabled"></th>
+                        <th><input type="checkbox" class="js_checkbox_for_many_enabled"> Отображать</th>
                         <th>Товар</th>
                         <th>Цена</th>
                         <th>Артикул</th>
                         <th>Краткое описание</th>
-                        <th>Яндекс Маркет <input type="checkbox" class="js_checkbox_for_many_yandex_market"></th>
+                        <th><input type="checkbox" class="js_checkbox_for_many_yandex_market"> Яндекс Маркет</th>
                     </tr>
                 </thead>
                 <tbody>
