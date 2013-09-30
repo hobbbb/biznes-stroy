@@ -18,22 +18,24 @@
             <table class="table table-condensed">
                 <thead>
                     <tr>
-                        <th>Отображать</th>
+                        <th>Отображать <input type="checkbox" class="js_checkbox_for_many_enabled"></th>
                         <th>Товар</th>
                         <th>Цена</th>
                         <th>Артикул</th>
                         <th>Краткое описание</th>
+                        <th>Яндекс Маркет <input type="checkbox" class="js_checkbox_for_many_yandex_market"></th>
                     </tr>
                 </thead>
                 <tbody>
                 [% FOR p = products %]
                     <tr [% 'class="error"' UNLESS p.enabled %]>
                         <input type="hidden" name="id" value="[% p.id %]">
-                        <td><input type="checkbox" name="enabled_[% p.id %]" [% 'checked' IF p.enabled %]></td>
+                        <td><input type="checkbox" name="enabled_[% p.id %]" class="js_checkbox_on_of_enabled" [% 'checked' IF p.enabled %]></td>
                         <td><input type="text" name="name_[% p.id %]" value="[% p.name | html %]"></td>
                         <td><input type="text" name="price_[% p.id %]" value="[% p.price | html %]"></td>
                         <td><input type="text" name="article_[% p.id %]" value="[% p.article | html %]"></td>
                         <td><textarea name="short_descr_[% p.id %]" rows="1">[% p.short_descr | html %]</textarea></td>
+                        <td><input type="checkbox" name="yandex_market_[% p.id %]" class="js_checkbox_on_of_yandex_market" [% 'checked' IF p.yandex_market %]></td>
                     </tr>
                 [% END %]
                 </tbody>
@@ -130,6 +132,10 @@
                 <div class="control-group [% 'error' IF err.seo_description %]">
                     <label class="control-label" for="seo_description">SEO description</label>
                     <div class="controls"><textarea id="seo_description" name="seo_description" class="span12">[% form.seo_description | html %]</textarea></div>
+                </div>
+                <div class="control-group [% 'error' IF err.yandex_market %]">
+                    <label class="control-label" for="yandex_market">Яндекс Маркет</label>
+                    <div class="controls"><input type="checkbox" id="yandex_market" name="yandex_market" [% 'checked' IF form.yandex_market %]></div>
                 </div>
 
                 [% INCLUDE submit_buttons %]

@@ -221,6 +221,7 @@ prefix '/admin/products' => sub {
                 }
                 $product->{name} = func::trim(params->{"name_$id"});
                 $product->{enabled} = params->{"enabled_$id"} ? 1 : 0;
+                $product->{yandex_market} = params->{"yandex_market_$id"} ? 1 : 0;
                 database->quick_update('products', { id => $id }, $product);
             }
         }
@@ -268,18 +269,20 @@ sub _check_product {
     my ($form, $err) = ({},{});
 
     for (qw/categories_id manufacturers_id enabled name short_descr descr detailed_chars price sale_price
-        stock_discount stock_price hit special new article supplier seo_url seo_title seo_keywords seo_description/
+        stock_discount stock_price hit special new article supplier seo_url seo_title seo_keywords seo_description
+        yandex_market/
     ) {
         $form->{$_} = $params->{$_};
     }
-    $form->{enabled}      = $form->{enabled} ? 1 : 0;
-    $form->{price}      ||= 0;
-    $form->{hit}          = $form->{hit} ? 1 : undef;
-    $form->{special}      = $form->{special} ? 1 : undef;
-    $form->{new}          = $form->{new} ? 1 : undef;
-    $form->{sale_price} ||= undef;
-    $form->{name}         = func::trim($form->{name});
-    $form->{seo_url}      = func::trim($form->{seo_url});
+    $form->{enabled}       = $form->{enabled} ? 1 : 0;
+    $form->{price}       ||= 0;
+    $form->{hit}           = $form->{hit} ? 1 : undef;
+    $form->{special}       = $form->{special} ? 1 : undef;
+    $form->{new}           = $form->{new} ? 1 : undef;
+    $form->{sale_price}  ||= undef;
+    $form->{name}          = func::trim($form->{name});
+    $form->{seo_url}       = func::trim($form->{seo_url});
+    $form->{yandex_market} = $form->{yandex_market} ? 1 : undef;
 
     if ($params->{stock_till_date} =~ /^\d{4}\-\d{2}\-\d{2}$/ and $params->{stock_till_hour} =~ /^\d{2}$/ and $params->{stock_till_min} =~ /^\d{2}$/) {
         $form->{stock_till} = "$params->{stock_till_date} $params->{stock_till_hour}:$params->{stock_till_min}";

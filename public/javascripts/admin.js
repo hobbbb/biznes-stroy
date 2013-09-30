@@ -47,6 +47,37 @@ $(function(){
             });
         },
     });
+
+    // Check many checkbox
+    function check_many_cb() {
+        var many_cb = new Object();
+        $('input[class^="js_checkbox_on_of_"]').each(function(){
+            var matches = this.className.match(/^js_checkbox_on_of_(\w+)$/);
+            if (many_cb[matches[1]] == undefined) {
+                many_cb[matches[1]] = 1;
+            }
+            if (this.checked == false) {
+                many_cb[matches[1]] = 0;
+            }
+        });
+        for (var c in many_cb) {
+            if (many_cb[c]) {
+                $('.js_checkbox_for_many_' + c).prop('checked','checked');
+            }
+            else {
+                $('.js_checkbox_for_many_' + c).prop('checked','');
+            }
+        }
+    }
+    check_many_cb();
+    $('input[class^="js_checkbox_on_of_"]').click(function() {
+        check_many_cb();
+    });
+    $('input[class^="js_checkbox_for_many_"]').click(function(){
+        var matches = this.className.match(/^js_checkbox_for_many_(\w+)$/);
+        var ch = this.checked;
+        $('.js_checkbox_on_of_' + matches[1]).each(function(){ this.checked = ch; })
+    });
 });
 
 //------------------------------ Catalog -----------------------------

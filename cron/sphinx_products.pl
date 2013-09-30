@@ -11,8 +11,10 @@ my $appdir = path($RealBin, '..');
 Dancer::Config::setting('appdir',$appdir);
 
 config->{environment} = 'production';
-config->{envdir} = "$appdir/environments";
 config->{confdir} = $appdir;
+config->{envdir}  = "$appdir/environments";
+config->{public}  = "$appdir/public";
+config->{views}   = "$appdir/views";
 Dancer::Config::load();
 
 my $export  = "/mnt/sphinx/bstroy_products.xml";
