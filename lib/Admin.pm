@@ -45,7 +45,17 @@ prefix '/admin' => sub {
     };
 
     any ['get', 'post'] => '/glob_vars/' => sub {
-        my $p = {};
+        my $p = {
+            type => params->{type} || 'shop',
+        };
+
+        my $where;
+        if ($p->{type} eq 'seller') {
+            $where->{name} = { like => 'seller_%' };
+        }
+        else {
+            $where->{name} = { like => 'seller_%', not => 1 };
+        }
 
         if (request->method() eq 'POST') {
             my $id = ref params->{id} eq 'ARRAY' ? params->{id} : [ params->{id} ];
@@ -56,14 +66,7 @@ prefix '/admin' => sub {
             redirect "http://". request->host ."/admin/glob_vars/";
         }
 
-        my $where;
-        if (params->{type} and params->{type} eq 'seller') {
-            $where = 'name LIKE "seller_%"';
-        }
-        else {
-            $where = 'name NOT LIKE "seller_%"';
-        }
-        $p->{glob_vars} = [ database->quick_select('glob_vars', $where) ];
+        $p->{glob_vars} = [ database->quick_select('glob_vars', $where, { order_by => 'name' }) ];
 
         template 'admin/glob_vars.tpl', $p;
     };

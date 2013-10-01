@@ -3,3 +3,4 @@ cache/
 public/*.xls
 public/*.ico
 public/*.txt
+public/*.xml

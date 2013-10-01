@@ -7,6 +7,11 @@
     </div>
 
     <div class="span10">
+        <ul class="nav nav-pills">
+            <li [% 'class="active"' IF type == 'shop' %]><a href="/admin/glob_vars/">Магазин</a></li>
+            <li [% 'class="active"' IF type == 'seller' %]><a href="/admin/glob_vars/?type=seller">Реквизиты продавца</a></li>
+        </ul>
+
         <table class="table table-hover">
             <thead>
                 <tr>
