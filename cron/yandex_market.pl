@@ -125,7 +125,7 @@ for my $p (@$products) {
         id                      => $p->{id},
         type                    => 'vendor.model',
         available               => 'true',
-        url                     => { content => $glob_vars->{'shop.url'} . ($p->{seo_url} || "/products/$p->{id}/") },
+        url                     => { content => $glob_vars->{'shop.url'} . '/' . ($p->{seo_url} || "products/$p->{id}/") },
         price                   => { content => $p->{price} },
         currencyId              => { content => 'RUR' },
         categoryId              => { content => $p->{categories_id} },
