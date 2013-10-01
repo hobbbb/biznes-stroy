@@ -208,7 +208,7 @@
         <div class="content-block">
             <div class="logo-place"><a href="#"><img src="/images/logo-bot.png" width="200" height="60" alt="Бизнес-Строй" /></a></div>
             <!-- end .logo-place-->
-            2008-2013 Бизнес-строй. Все права защищены.
+            &copy; 2008-2013 Бизнес-строй. Все права защищены.
         </div>
         <!-- end .content-block-->
     </div>
