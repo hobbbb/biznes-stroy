@@ -104,10 +104,9 @@ $t[4] += 1;
 
 # Common
 my $glob_vars = { map { $_->{name} => func::escape_html($_->{val}) } @{[ database->quick_select('glob_vars', {}) ]} };
-
 $glob_vars->{'shop.url'}  = 'http://' . $glob_vars->{'shop.url'} if $glob_vars->{'shop.url'} !~ /^http/;
-$glob_vars->{'shop.url'} .= '/' if $glob_vars->{'shop.url'} !~ m!/$!;
-unless ($glob_vars->{'shop.name'} and $glob_vars->{'shop.url'} =~ m!^http://.*?/$! and $glob_vars->{'shop.company'}) {
+
+unless ($glob_vars->{'shop.name'} and $glob_vars->{'shop.url'} and $glob_vars->{'shop.company'}) {
     die 'YML ERROR: wrong cfg';
 }
 
@@ -126,7 +125,7 @@ for my $p (@$products) {
         id                      => $p->{id},
         type                    => 'vendor.model',
         available               => 'true',
-        url                     => { content => '1' },
+        url                     => { content => $glob_vars->{'shop.url'} },
         price                   => { content => $p->{price} },
         currencyId              => { content => 'RUR' },
         categoryId              => { content => $p->{categories_id} },
