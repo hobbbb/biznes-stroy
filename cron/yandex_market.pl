@@ -105,6 +105,8 @@ $t[4] += 1;
 # Common
 my $glob_vars = { map { $_->{name} => func::escape_html($_->{val}) } @{[ database->quick_select('glob_vars', {}) ]} };
 
+$glob_vars->{'shop.url'}  = 'http://' . $glob_vars->{'shop.url'} if $glob_vars->{'shop.url'} !~ /^http/;
+$glob_vars->{'shop.url'} .= '/' if $glob_vars->{'shop.url'} !~ m!/$!;
 unless ($glob_vars->{'shop.name'} and $glob_vars->{'shop.url'} =~ m!^http://.*?/$! and $glob_vars->{'shop.company'}) {
     die 'YML ERROR: wrong cfg';
 }
