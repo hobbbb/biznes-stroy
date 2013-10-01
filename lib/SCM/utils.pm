@@ -22,11 +22,11 @@ sub trim {
 sub escape_html {
     my $str = shift;
 
+    $str =~ s/&/&amp;/g;
     $str =~ s/"/&quot;/g;
     $str =~ s/'/&apos;/g;
     $str =~ s/>/&gt;/g;
     $str =~ s/</&lt;/g;
-    $str =~ s/&/&amp;/g;
 
     return $str;
 }
