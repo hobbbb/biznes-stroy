@@ -1,4 +1,4 @@
-package BiznesStroy;
+package BiznesShop;
 
 use Dancer ':syntax';
 use Dancer::Plugin::Database;

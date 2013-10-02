@@ -35,7 +35,7 @@ prefix '/admin/catalog' => sub {
         $p->{products} = [ database->quick_select('products', { categories_id => $p->{parent_id} }, { order_by => 'sort' }) ];
         $p->{breadcrumbs} = _breadcrumbs($parent_id);
 
-        $p->{tree} = BiznesStroy::categories_tree();
+        $p->{tree} = BiznesShop::categories_tree();
         template 'admin/catalog.tpl', $p;
     };
 };
@@ -59,7 +59,7 @@ prefix '/admin/categories' => sub {
                 redirect "http://". request->host ."/admin/catalog/$p->{form}->{parent_id}/";
             }
         }
-        $p->{tree} = BiznesStroy::categories_tree();
+        $p->{tree} = BiznesShop::categories_tree();
         template 'admin/categories.tpl', $p;
     };
 
@@ -89,7 +89,7 @@ prefix '/admin/categories' => sub {
                 $p->{form} = $category;
             }
         }
-        $p->{tree} = BiznesStroy::categories_tree();
+        $p->{tree} = BiznesShop::categories_tree();
         template 'admin/categories.tpl', $p;
     };
 
@@ -138,7 +138,7 @@ prefix '/admin/products' => sub {
             }
         }
         $p->{manufacturers} = [ database->quick_select('manufacturers', {}) ];
-        $p->{tree} = BiznesStroy::categories_tree();
+        $p->{tree} = BiznesShop::categories_tree();
         template 'admin/products.tpl', $p;
     };
 
@@ -195,7 +195,7 @@ prefix '/admin/products' => sub {
             }
         }
         $p->{manufacturers} = [ database->quick_select('manufacturers', {}) ];
-        $p->{tree} = BiznesStroy::categories_tree();
+        $p->{tree} = BiznesShop::categories_tree();
         template 'admin/products.tpl', $p;
     };
 
@@ -232,7 +232,7 @@ prefix '/admin/products' => sub {
             $p->{products} = [ database->quick_select('products', $where) ];
         }
 
-        $p->{tree} = BiznesStroy::categories_tree();
+        $p->{tree} = BiznesShop::categories_tree();
         template 'admin/products.tpl', $p;
     };
 

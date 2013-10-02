@@ -185,7 +185,7 @@ prefix '/admin/price' => sub {
         }
 
         $vars->{configs} = [ database->quick_select('cfg_for_price', {}) ];
-        $vars->{tree} = BiznesStroy::categories_tree();
+        $vars->{tree} = BiznesShop::categories_tree();
 
         template 'admin/price.tpl', $vars;
     };
