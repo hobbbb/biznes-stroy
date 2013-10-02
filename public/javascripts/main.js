@@ -177,7 +177,7 @@ function delivery_refresh() {
             var $total_with_delivery_div = $('#js_total_with_delivery');
             $total_with_delivery_div.hide();
             if (total) {
-                if (total < GLOB_delivery_min_sum) {
+                if (total < GLOB['delivery_min_sum']) {
                     $('.js_shipping_with_delivery').hide();
                     return;
                 }
