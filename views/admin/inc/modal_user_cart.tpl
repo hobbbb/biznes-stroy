@@ -1,5 +1,6 @@
 <div id="modal_user_cart" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
     <form class="form-horizontal" method="post" action="" data-users-id="">
+    <input type="hidden" id="password" name="password" value="" data-val="[% func.generate() %]">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3>Карточка покупатель</h3>
@@ -8,7 +9,7 @@
             <div class="control-group">
                 <label class="control-label" for="type">Тип</label>
                 <div class="controls">
-                    <select name="type" id="type" class="js_user_type">
+                    <select name="type" id="type" data-val="ph" class="js_user_type">
                             <option value="ph">Физическое лицо</option>
                             <option value="ur" [% 'selected' IF form.type == 'ur' %]>Юридическое лицо</option>
                     </select>
@@ -27,11 +28,7 @@
             </div>
             <div class="control-group">
                 <label class="control-label" for="fio">ФИО</label>
-                <div class="controls"><input type="text" id="fio" name="fio" value="" placeholder="ФИО"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="password">Пароль</label>
-                <div class="controls"><input type="password" id="password" name="password" value="" placeholder="Пароль"></div>
+                <div class="controls"><input type="text" id="fio" name="fio" value="" data-val="Вальтер Эго" placeholder="ФИО"></div>
             </div>
 
             <div class="hide" id="js_ur_block">

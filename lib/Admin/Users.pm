@@ -134,24 +134,26 @@ sub _check_admin_user {
     }
     $form->{is_partner} = $form->{is_partner} ? 1 : 0;
     $form->{email}      = func::trim(lc $form->{email});
+    $form->{type}     ||= 'ph';
 
     $err->{phone}                   = 1 if $form->{phone} !~ /^[\d\s\-\+]+$/;
     $err->{email}                   = 1 if $form->{email} !~ /^.+@.+\.[a-z]{2,4}$/;
     $err->{fio}                     = 1 if length($form->{fio}) < 3;
-    $err->{password}                = 1 if length($form->{password}) < 6;
-    $err->{ogrn}                    = 1 if $form->{ogrn} and length($form->{ogrn}) != 13;
-    $err->{inn}                     = 1 if $form->{inn} and length($form->{inn}) != 10 and length($form->{inn}) != 12;
-    $err->{kpp}                     = 1 if $form->{kpp} and length($form->{kpp}) != 9;
-    $err->{bik}                     = 1 if $form->{bik} and length($form->{bik}) != 9;
-    $err->{current_account}         = 1 if $form->{current_account} and length($form->{current_account}) != 20;
-    $err->{correspondent_account}   = 1 if $form->{correspondent_account} and length($form->{correspondent_account}) != 20;
-    $err->{okpo}                    = 1 if $form->{okpo} and length($form->{okpo}) != 8 and length($form->{okpo}) != 10;
-    $err->{okato}                   = 1 if $form->{okato} and $form->{okato} !~ /^\d{2,11}$/;
+    $err->{password}                = 1 if $form->{password} !~ /^.{6,50}$/;
     $err->{partner_discount}        = 1 if $form->{partner_discount} and $form->{partner_discount} !~ /^\d{1,2}$/;
 
     if ($form->{type} eq 'ur') {
+        $err->{ogrn}                    = 1 if $form->{ogrn} and length($form->{ogrn}) != 13;
+        $err->{inn}                     = 1 if $form->{inn} and length($form->{inn}) != 10 and length($form->{inn}) != 12;
+        $err->{kpp}                     = 1 if $form->{kpp} and length($form->{kpp}) != 9;
+        $err->{bik}                     = 1 if $form->{bik} and length($form->{bik}) != 9;
+        $err->{current_account}         = 1 if $form->{current_account} and length($form->{current_account}) != 20;
+        $err->{correspondent_account}   = 1 if $form->{correspondent_account} and length($form->{correspondent_account}) != 20;
+        $err->{okpo}                    = 1 if $form->{okpo} and length($form->{okpo}) != 8 and length($form->{okpo}) != 10;
+        $err->{okato}                   = 1 if $form->{okato} and $form->{okato} !~ /^\d{2,11}$/;
+
         map { $err->{$_} = 1 unless $form->{$_} } qw/firm ogrn inn kpp legal_address actual_address general_manager main_accountant
-            bank current_account bik correspondent_account okpo okato tax_inspection/;
+            bank current_account bik correspondent_account okpo/;
     }
 
     if ($regcode) {

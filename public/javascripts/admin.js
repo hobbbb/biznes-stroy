@@ -237,7 +237,13 @@ $(function() {
         }
         else {
             $('#js_ur_block', $form).hide();
-            $('input, select, textarea', $form).val('');
+            // $('input, select, textarea', $form).val('');
+            $('input, select, textarea', $form).each(function() {
+                if ($(this).data('val'))
+                    $(this).val($(this).data('val'));
+                else
+                    $(this).val('');
+            });
         }
     });
 
@@ -245,6 +251,7 @@ $(function() {
         var $form = $(this).closest('form');
 
         $.ajax({
+            type: $form.attr('method'),
             url: $form.attr('action'),
             data: $form.serialize(),
             success: function(ans) {
@@ -386,7 +393,8 @@ function bill_cart_draw() {
 
     $('.js_bill_number', $bill_cart_form).html(bill_cart['id']);
     $('input[name="bills_id"]', $bill_cart_form).val(bill_cart['id']);
-    if (bill_cart['order']['file'])
+
+    if (bill_cart['order'] && bill_cart['order']['file'])
         $('.js_requisites', $bill_cart_form).html('Реквизиты: <a href="/upload/orders/' + bill_cart['order']['file'] + '" target="_blank">' + bill_cart['order']['file'] + '</a>');
     $('.js_comments', $bill_cart_form).html(bill_cart['comments']);
 

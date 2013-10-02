@@ -46,6 +46,7 @@ hook before_template_render => sub {
 
     # subs
     $tokens->{func} = {
+        generate       => sub { func::generate($_[0]) },
         price_in_words => sub { func::price_in_words($_[0]) },
     };
 };

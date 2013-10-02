@@ -120,14 +120,14 @@ sub _check_user {
     if ($regcode) {
         $err->{email} = $err->{email_exist} = 1 if database->quick_select('users', { email => $form->{email}, regcode => { 'ne' => $regcode } });
         if ($form->{password}) {
-            $err->{password} = $err->{password2} = 1 if length($form->{password}) < 6 or $form->{password} ne $form->{password2};
+            $err->{password} = $err->{password2} = 1 if $form->{password} !~ /^.{6,50}$/ or $form->{password} ne $form->{password2};
         }
         else {
             delete $form->{password};
         }
     }
     else {
-        $err->{password} = $err->{password2} = 1 if length($form->{password}) < 6 or $form->{password} ne $form->{password2};
+        $err->{password} = $err->{password2} = 1 if $form->{password} !~ /^.{6,50}$/ or $form->{password} ne $form->{password2};
         $err->{email} = $err->{email_exist} = 1 if database->quick_select('users', { email => $form->{email} });
     }
     delete $form->{password2};
