@@ -139,6 +139,8 @@ $(document).ready(function(){
             cart_refresh();
         });
         $('.js_qnt').on('change', function(){
+            if ($(this).val() <= 0)
+                $(this).closest('tr').remove();
             cart_refresh();
         });
         $('.js_del').on('click', function(){

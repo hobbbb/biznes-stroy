@@ -36,7 +36,7 @@ prefix '/shopping_cart' => sub {
         my $ids = ref(params->{id}) eq 'ARRAY' ? params->{id} : [params->{id}];
         for my $id (@$ids) {
             my $product = database->quick_select('products', { enabled => 1, id => $id });
-            if ($product->{id}) {
+            if ($product->{id} and params->{"qnt_$id"}) {
                 push @$shopping_cart, {
                     id      => $id,
                     qnt     => params->{"qnt_$id"},
@@ -55,7 +55,7 @@ prefix '/shopping_cart' => sub {
 
             my $cart = cookie 'cart';
             my $shopping_cart = from_json($cart) if $cart;
-            $p->{err}->{no_products} = 1 unless $shopping_cart;
+            $p->{err}->{no_products} = 1 unless $shopping_cart and @$shopping_cart;
 
             unless (scalar keys %{$p->{err}}) {
                 my $order = { data => $p->{form} };
@@ -161,9 +161,9 @@ sub _check_order {
     }
     $form->{users_id} ||= 0;
 
-    $err->{shipping} = 1 if $form->{shipping} !~ /^.+$/;
-    $err->{payment} = 1 if $form->{payment} !~ /^.+$/;
-    $err->{phone} = 1 if $form->{phone} !~ /^[\d\s\-\+]+$/;
+    $err->{shipping} = 1 unless $form->{shipping};
+    $err->{payment}  = 1 unless $form->{payment};
+    $err->{phone}    = 1 if !$form->{phone} or $form->{phone} !~ /^[\d\s\-\+]+$/;
     $err->{discount} = 1 if $form->{discount} and $form->{discount} !~ /^\d+(\.\d+)?$/;
     if (defined $opt and $opt->{products} eq 'check') {
         $err->{products} = 1 unless $form->{products};
