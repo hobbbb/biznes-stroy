@@ -250,7 +250,7 @@ function basket_toggle(state) {
             }
             if (qnt) {
                 $('#js_basket_qnt').text(qnt);
-                $('#js_basket_sum').text(sum);
+                $('#js_basket_sum').text(sum.toFixed(2));
                 $('#js_basket_empty').hide();
                 $('#js_basket_full').show();
             }
