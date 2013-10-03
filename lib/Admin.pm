@@ -49,12 +49,13 @@ prefix '/admin' => sub {
             type => params->{type} || 'shop',
         };
 
+        my @types = qw/seller/;
         my $where;
-        if ($p->{type} eq 'seller') {
-            $where->{name} = { like => 'seller_%' };
+        if (grep(/^$p->{type}$/, @types)) {
+            $where->{name} = { like => "$p->{type}.%" };
         }
         else {
-            $where->{name} = { like => 'seller_%', not => 1 };
+            $where = join(' AND ', map { "name NOT LIKE '$_.%'" } @types);
         }
 
         if (request->method() eq 'POST') {

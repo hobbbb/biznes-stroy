@@ -237,7 +237,6 @@ $(function() {
         }
         else {
             $('#js_ur_block', $form).hide();
-            // $('input, select, textarea', $form).val('');
             $('input, select, textarea', $form).each(function() {
                 if ($(this).data('val'))
                     $(this).val($(this).data('val'));
@@ -390,12 +389,21 @@ function bill_cart_draw() {
     if (bill_cart['status'] == 'closed') return;
 
     var $bill_cart_form = $('.js_bill_cart_form');
+    var $modal_user_cart = $('#modal_user_cart');
 
     $('.js_bill_number', $bill_cart_form).html(bill_cart['id']);
     $('input[name="bills_id"]', $bill_cart_form).val(bill_cart['id']);
 
-    if (bill_cart['order'] && bill_cart['order']['file'])
-        $('.js_requisites', $bill_cart_form).html('Реквизиты: <a href="/upload/orders/' + bill_cart['order']['file'] + '" target="_blank">' + bill_cart['order']['file'] + '</a>');
+    // Если счет из заказа
+    if (bill_cart['order']) {
+        if (bill_cart['order']['file'])
+            $('.js_requisites', $bill_cart_form).html('Реквизиты: <a href="/upload/orders/' + bill_cart['order']['file'] + '" target="_blank">' + bill_cart['order']['file'] + '</a>');
+
+        $('#fio', $modal_user_cart).data('val', bill_cart['order']['fio']);
+        $('#phone', $modal_user_cart).data('val', bill_cart['order']['phone']);
+        $('#email', $modal_user_cart).data('val', bill_cart['order']['email']);
+    }
+
     $('.js_comments', $bill_cart_form).html(bill_cart['comments']);
 
     // Проставляем продукты

@@ -29,28 +29,28 @@
 </script>
 
 <div style="width: 1000px;">
-    <div style="font-weight: bold;">[% vars.glob_vars.seller_firm %]</div>
-    <div>[% vars.glob_vars.seller_legal_address %]</div>
+    <div style="font-weight: bold;">[% vars.glob_vars.${'seller.firm'} %]</div>
+    <div>[% vars.glob_vars.${'seller.legal_address'} %]</div>
 
     <div style="padding-top: 30px; font-weight: bold; text-align: center;">Реквизиты для заполнения платежного поручения</div>
     <table border="1" style="width: 100%; border-spacing: 0px; border-collapse: collapse; border: 1px solid black;">
         <tr>
-            <td>ИНН [% vars.glob_vars.seller_inn %]</td>
-            <td>КПП [% vars.glob_vars.seller_kpp %]</td>
+            <td>ИНН [% vars.glob_vars.${'seller.inn'} %]</td>
+            <td>КПП [% vars.glob_vars.${'seller.kpp'} %]</td>
             <td rowspan="2" valign="top">Сч. №</td>
-            <td rowspan="2" valign="top">[% vars.glob_vars.seller_current_account %]</td>
+            <td rowspan="2" valign="top">[% vars.glob_vars.${'seller.current_account'} %]</td>
         </tr>
         <tr>
-            <td colspan="2">[% vars.glob_vars.seller_firm %]</td>
+            <td colspan="2">[% vars.glob_vars.${'seller.firm'} %]</td>
         </tr>
         <tr>
-            <td rowspan="2" colspan="2" style="width: 65%;">Банк продавца<br>[% vars.glob_vars.seller_bank %]</td>
+            <td rowspan="2" colspan="2" style="width: 65%;">Банк продавца<br>[% vars.glob_vars.${'seller.bank'} %]</td>
             <td style="width: 10%;">БИК</td>
-            <td style="border-bottom-color: white;">[% vars.glob_vars.seller_bik %]</td>
+            <td style="border-bottom-color: white;">[% vars.glob_vars.${'seller.bik'} %]</td>
         </tr>
         <tr>
             <td>Сч. №</td>
-            <td>[% vars.glob_vars.seller_correspondent_account %]</td>
+            <td>[% vars.glob_vars.${'seller.correspondent_account'} %]</td>
         </tr>
     </table>
 
@@ -138,11 +138,11 @@
         <tr>
             <td>Руководитель предприятия</td>
             <td style="width: 30%; border-bottom: 1px solid black;">
-                [% buyer.general_manager %]
+                [% vars.glob_vars.${'seller.general_manager'} %]
             </td>
             <td style="text-align: right;">Бухгалтер</td>
             <td style="width: 30%; border-bottom: 1px solid black;">
-                [% buyer.main_accountant %]
+                [% vars.glob_vars.${'seller.main_accountant'} %]
             </td>
         </tr>
     </table>
