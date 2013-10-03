@@ -37,7 +37,7 @@ hook before_template_render => sub {
     my $tokens = shift;
 
     $tokens->{top_menu} = [ database->quick_select('top_menu', {}, { order_by => 'sort' }) ];
-    $tokens->{categories_tree} = categories_tree();
+    $tokens->{categories_tree} = categories_tree(0, { enabled => 1 });
 
     $tokens->{footer_content_list} = [ database->quick_select('footer_content', { parent_id => 0 }, { order_by => 'sort' }) ];
     for (@{$tokens->{footer_content_list}}) {
@@ -330,10 +330,15 @@ any qr!^/[^/]+$! => sub {
 
 sub categories_tree {
     my $parent_id = shift || 0;
+    my $opts = shift;
+    return if $opts and ref $opts ne 'HASH';
 
-    my $categories = [ database->quick_select('categories', { parent_id => $parent_id }, { order_by => 'sort' }) ];
+    my $where = { parent_id => $parent_id };
+    $where->{enabled} = 1 if $opts->{enabled};
+
+    my $categories = [ database->quick_select('categories', $where, { order_by => 'sort' }) ];
     for (@$categories) {
-        $_->{childs} = categories_tree($_->{id});
+        $_->{childs} = categories_tree($_->{id}, $opts);
     }
 
     return $categories;
