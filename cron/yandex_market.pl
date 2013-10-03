@@ -25,7 +25,6 @@ sub sorted_keys {
 
     my @ret;
     if ($name eq 'shop') {
-        # return qw/name company url categories offers/;
         my @fields = qw/name company url phone platform version agency email currencies categories store pickup
             delivery deliveryIncluded local_delivery_cost adult offers/;
 
@@ -129,7 +128,6 @@ for my $p (@$products) {
         price                   => { content => $p->{price} },
         currencyId              => { content => 'RUR' },
         categoryId              => { content => $p->{categories_id} },
-        pickup                  => { content => 'true' },
         vendor                  => { content => func::escape_html($manufacturer->{name}) },
         model                   => { content => func::escape_html($p->{name}) },
         description             => { content => func::escape_html($p->{short_descr}) },
@@ -189,6 +187,13 @@ my $yml_catalog = {
         name        => { content => $glob_vars->{'shop.name'} },
         company     => { content => $glob_vars->{'shop.company'} },
         url         => { content => $glob_vars->{'shop.url'} },
+        currencies  => {
+            currency => {
+                id   => 'RUR',
+                rate => 1,
+                plus => 0,
+            },
+        },
         categories  => {
             category => \@cat,
         },
