@@ -11,10 +11,10 @@
 <div style="width: 1000px;">
     <h3>СЧЕТ-ФАКТУРА ?3791? от ?24 Июня 2013 г.?</h3>
     <div>ИСПРАВЛЕНИЕ № --- от ---</div>
-    <div>Продавец: [% vars.glob_vars.${'seller.firm'} %]</div>
-    <div>Адрес: [% vars.glob_vars.${'seller.legal_address'} %]</div>
-    <div>ИНН/КПП продавца: [% vars.glob_vars.${'seller.inn'} %] / [% vars.glob_vars.${'seller.kpp'} %]</div>
-    <div>Грузоотправитель и его адрес: [% vars.glob_vars.${'seller.firm'} %]</div>
+    <div>Продавец: [% vars.glob_vars.seller.firm} %]</div>
+    <div>Адрес: [% vars.glob_vars.seller.legal_address %]</div>
+    <div>ИНН/КПП продавца: [% vars.glob_vars.seller.inn %] / [% vars.glob_vars.seller.kpp %]</div>
+    <div>Грузоотправитель и его адрес: [% vars.glob_vars.seller.firm %]</div>
     <div>Грузополучатель и его адрес: [% buyer.type == 'ph' ? buyer.fio : buyer.firm %]</div>
     <div>К платежно-расчетному документу №  ________ от ________________</div>
     <div>Покупатель: [% buyer.type == 'ph' ? buyer.fio : buyer.firm %]</div>

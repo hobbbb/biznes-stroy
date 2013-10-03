@@ -482,7 +482,7 @@
             <td class="B ac">0330504</td>
         </tr>
         <tr>
-            <td colspan="2" class="bb">[% vars.glob_vars.${'seller.firm'} %]</td>
+            <td colspan="2" class="bb">[% vars.glob_vars.seller.firm %]</td>
             <td class="ar">по ОКПО</td>
             <td class="B"></td>
         </tr>

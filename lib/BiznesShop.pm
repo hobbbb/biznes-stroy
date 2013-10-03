@@ -27,7 +27,19 @@ hook before => sub {
     }
 
     my $glob_vars = [ database->quick_select('glob_vars', {}) ];
-    var glob_vars => { map { $_->{name} => $_->{val} } @$glob_vars };
+    my $gb;
+    for (@$glob_vars) {
+        my @s = split /\./, $_->{name};
+        if (scalar @s > 1) {
+            $gb->{$s[0]}->{$s[1]} = $_->{val};
+        }
+        else {
+            $gb->{$s[0]} = $_->{val};
+        }
+    }
+
+    # var glob_vars => { map { $_->{name} => $_->{val} } @$glob_vars };
+    var glob_vars => $gb;
 
     var loged => Users::check_auth();
     Users::last_visit();
