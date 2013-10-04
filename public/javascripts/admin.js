@@ -313,7 +313,7 @@ $(function() {
 
         $('.js_close_cart', $bill_cart_form).click(function(){
             var redirect = $('.js_bill_cart').data('redirect-after-close');
-            save_bill_cart('status=closed', redirect);
+            save_bill_cart('status=stop', redirect);
         });
 
         $('.js_search_user', $bill_cart_form).autocomplete({
@@ -404,21 +404,6 @@ function bill_cart_draw() {
         $('#email', $modal_user_cart).data('val', bill_cart['order']['email']);
     }
 
-    $('.js_comments', $bill_cart_form).html(bill_cart['comments']);
-
-    // Проставляем продукты
-    if (bill_cart['products']) {
-        var html = '';
-        for (var i = 0; i < bill_cart['products'].length; i++) {
-            html   += '<tr>'
-                    + '<td><input type="hidden" name="products_id" value="' + bill_cart['products'][i]['products_id'] + '">' + bill_cart['products'][i]['name'] + '</td>'
-                    + '<td><input type="text" name="qnt_' + bill_cart['products'][i]['products_id'] + '" value="' + bill_cart['products'][i]['quantity'] + '"></td>'
-                    + '<td><a href="javascript: void(0)" onClick="$(this).closest(\'tr\').remove(); save_bill_cart();"><i class="icon-remove"></i></a></td>'
-                    + '</tr>';
-        }
-        $('.js_bill_cart_products').html(html);
-    }
-
     // Проставляем покупателя
     if (bill_cart['buyers_id'] > 0) {
         $('input[name="buyers_id"]', $bill_cart_form).val(bill_cart['buyer']['id']);
@@ -436,6 +421,25 @@ function bill_cart_draw() {
         else
             $('.js_user_edit', $bill_cart_form).hide();
     });
+
+    // Проставляем продукты
+    if (bill_cart['products']) {
+        var html = '';
+        for (var i = 0; i < bill_cart['products'].length; i++) {
+            html   += '<tr>'
+                    + '<td><input type="hidden" name="products_id" value="' + bill_cart['products'][i]['products_id'] + '">' + bill_cart['products'][i]['name'] + '</td>'
+                    + '<td><input type="text" name="qnt_' + bill_cart['products'][i]['products_id'] + '" value="' + bill_cart['products'][i]['quantity'] + '"></td>'
+                    + '<td><a href="javascript: void(0)" onClick="$(this).closest(\'tr\').remove(); save_bill_cart();"><i class="icon-remove"></i></a></td>'
+                    + '</tr>';
+        }
+        $('.js_bill_cart_products').html(html);
+    }
+
+    // Проставляем остальное
+    $('.js_comments', $bill_cart_form).html(bill_cart['comments']);
+    $('input[name="delivery"]', $bill_cart_form).val(bill_cart['delivery']);
+    if (bill_cart['delivery_by_positions'])
+        $('input[name="delivery_by_positions"]', $bill_cart_form).attr('checked','checked');
 
     // Фиксируем карту, если она высокая
     if (bill_cart['products'].length * 45 + 400 < $(window).height()) {

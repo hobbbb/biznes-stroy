@@ -35,6 +35,18 @@
             <tbody class="js_bill_cart_products"></tbody>
         </table>
 
+        <div class="control-group">
+            <label class="control-label" for="delivery">Доставка</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" id="delivery" name="delivery" value="" class="span12">
+                </div>
+                <label class="checkbox inline">
+                    <input type="checkbox" name="delivery_by_positions" id="delivery_by_positions" value="1">Размазать
+                </label>
+            </div>
+        </div>
+
         <div class="js_requisites"></div>
         <div class="js_comments"></div>
 

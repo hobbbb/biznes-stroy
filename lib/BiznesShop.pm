@@ -37,8 +37,6 @@ hook before => sub {
             $gb->{$s[0]} = $_->{val};
         }
     }
-
-    # var glob_vars => { map { $_->{name} => $_->{val} } @$glob_vars };
     var glob_vars => $gb;
 
     var loged => Users::check_auth();

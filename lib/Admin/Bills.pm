@@ -212,7 +212,9 @@ sub _bill_save {
 
     if ($params->{bills_id} =~ /^\d+$/) {
         my $cart = { date => $params->{date}, buyers_id => $params->{buyers_id} };
-        $cart->{status} = $params->{status} if $params->{status};
+        $cart->{status}   = $params->{status} if $params->{status};
+        $cart->{delivery} = $params->{delivery} if $params->{delivery};
+        $cart->{delivery_by_positions} = $params->{delivery_by_positions};
 
         database->quick_update('bills', { managers_id => vars->{loged}->{id}, id => $params->{bills_id} }, $cart);
 
