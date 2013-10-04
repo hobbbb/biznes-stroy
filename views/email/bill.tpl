@@ -98,7 +98,15 @@
                 'nds'               => 0,
             };
 
+            IF delivery_by_positions;
+                SET plus = delivery / products.size;
+            END;
+
             FOR p IN products;
+                IF plus;
+                    p.price = p.price + plus / p.quantity;
+                END;
+
                 SET p.sum = p.quantity * p.price;
                 SET p.sum_without_nds = (p.sum / 118) * 100;
                 SET p.price_without_nds = (p.price / 118) * 100;
