@@ -76,7 +76,7 @@ function initNav(){
 		}, function(){
 			time = setTimeout(function(){
 				ul.css({display: 'none'});
-			}, 2300);
+			}, 500);
 		});
 	});
 }
