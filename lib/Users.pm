@@ -113,7 +113,7 @@ sub _check_user {
     $form->{email} = lc $form->{email};
     $form->{email} = func::trim($form->{email});
 
-    $err->{phone} = 1 if (length($form->{phone}) < 7 or $form->{phone} !~ /^[\d\s\-\+\(\)]+$/ or $form->{phone} !~ /^(\+7|8)/);
+    $err->{phone} = 1 if $form->{phone} !~ /^\d{10}$/;
     $err->{email} = 1 if $form->{email} !~ /^.+@.+\.[a-z]{2,4}$/;
     $err->{fio} = 1 if length($form->{fio}) < 3;
     $err->{address} = 1 if ($form->{address} and $form->{address} =~ /(ftp|http|\.ru|\.org|\.com)/);

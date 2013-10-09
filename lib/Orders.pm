@@ -163,7 +163,7 @@ sub _check_order {
 
     $err->{shipping} = 1 unless $form->{shipping};
     $err->{payment}  = 1 unless $form->{payment};
-    $err->{phone}    = 1 if !$form->{phone} or $form->{phone} !~ /^[\d\s\-\+]+$/;
+    $err->{phone}    = 1 if $form->{phone} !~ /^\d{10}$/;
     $err->{discount} = 1 if $form->{discount} and $form->{discount} !~ /^\d+(\.\d+)?$/;
     if (defined $opt and $opt->{products} eq 'check') {
         $err->{products} = 1 unless $form->{products};

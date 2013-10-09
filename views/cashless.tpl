@@ -48,6 +48,7 @@
                         <li>
                             <span class="Requirement">*</span>
                             <input type="text" name="phone" value="[% form.phone || vars.loged.phone %]" placeholder="Телефон" [% 'class="f_err"' IF err.phone %]>
+                            <div style="margin-left: 10px; font-size: 8pt">Формат: 9261234567</div>
                         </li>
                         <li>
                             <span class="Requirement">*</span>

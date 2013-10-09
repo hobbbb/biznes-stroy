@@ -136,7 +136,7 @@ sub _check_admin_user {
     $form->{email}      = func::trim(lc $form->{email});
     $form->{type}     ||= 'ph';
 
-    $err->{phone}                   = 1 if $form->{phone} !~ /^[\d\s\-\+]+$/;
+    $err->{phone}                   = 1 if $form->{phone} !~ /^\d+$/;
     $err->{email}                   = 1 if $form->{email} !~ /^.+@.+\.[a-z]{2,4}$/;
     $err->{fio}                     = 1 if length($form->{fio}) < 3;
     $err->{password}                = 1 if $form->{password} !~ /^.{6,50}$/;
