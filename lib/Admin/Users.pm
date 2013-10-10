@@ -152,8 +152,7 @@ sub _check_admin_user {
         $err->{okpo}                    = 1 if $form->{okpo} and length($form->{okpo}) != 8 and length($form->{okpo}) != 10;
         $err->{okato}                   = 1 if $form->{okato} and $form->{okato} !~ /^\d{2,11}$/;
 
-        map { $err->{$_} = 1 unless $form->{$_} } qw/firm inn kpp legal_address actual_address general_manager main_accountant
-            bank current_account bik correspondent_account okpo/;
+        map { $err->{$_} = 1 unless $form->{$_} } qw/firm inn/;
     }
 
     if ($regcode) {
