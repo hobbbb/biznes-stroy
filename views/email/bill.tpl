@@ -28,7 +28,7 @@
     });
 </script>
 
-<div style="width: 1000px;">
+<div style="width: 1000px; font-size: 11pt; font-family: sans;">
     <div style="font-weight: bold;">[% vars.glob_vars.seller.firm %]</div>
     <div>[% vars.glob_vars.seller.legal_address %]</div>
 
@@ -142,23 +142,23 @@
     <div>Сумма прописью: [% func.price_in_words(total.sum) %]. Без НДС.</div>
 
     <div style="padding-top: 30px;"></div>
-    <table>
+    <table style="width: 1000px">
         <tr>
-            <td>Руководитель предприятия</td>
-            <td style="width: 30%; border-bottom: 1px solid black;">
+            <td style="width: 150px;">Руководитель предприятия</td>
+            <td style="width: 350px; border-bottom: 1px solid black;">
                 [% vars.glob_vars.seller.general_manager %]
             </td>
-            <td style="text-align: right;">Бухгалтер</td>
-            <td style="width: 30%; border-bottom: 1px solid black;">
+            <td style="width: 120px;text-align: right;">Бухгалтер</td>
+            <td style="width: 350px; border-bottom: 1px solid black;">
                 [% vars.glob_vars.seller.main_accountant %]
             </td>
         </tr>
     </table>
-    <div style="position: relative; top: -55px; left: 250px;">
+    <div style="position: relative; top: -55px; left: 430px;">
         <img src="http://[% request.env.HTTP_HOST %]/images/podpis.png" width="100px">
     </div>
 
-    <div style="position: relative; top: -135px; left: 480px;">
+    <div style="position: relative; top: -135px; left: 910px;">
         <img src="http://[% request.env.HTTP_HOST %]/images/podpis.png" width="100px">
     </div>
 
