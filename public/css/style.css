@@ -1834,6 +1834,7 @@ table .sep {
 	position:relative;
 	vertical-align:top;
 }
+div.check { margin-left: 117px; }
 
 .check,
 .checks li {

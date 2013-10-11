@@ -61,10 +61,10 @@
                         <input class="customRadio js_payment" type="radio" id="payment_cash" name="payment" value="cash" [% 'checked' IF form.payment == 'cash' || !form.payment %] />
                         <label for="payment_cash">Наличными</label>
                     </span>
-                    <span class="check">
+                    <div class="check">
                         <input class="customRadio js_payment" type="radio" id="payment_cashless" name="payment" value="cashless" [% 'checked' IF form.payment == 'cashless' %] />
                         <label for="payment_cashless">Безнал</label>
-                    </span>
+                    </div>
                 </div>
                 <!-- end .choose-->
             </div>
