@@ -184,10 +184,9 @@ sub _send_order {
         engine('template')->apply_renderer('email/order.tpl', { order => $order }),
         {}, { layout => 'blank.tpl' }
     );
-    my $email_to = vars->{glob_vars}->{email};
 
     my %letter = (
-        to          => $email_to,
+        to          => vars->{glob_vars}->{email},
         subject     => "Новый заказ (№ $order->{data}->{id})",
         body        => $body,
     );
@@ -215,6 +214,15 @@ sub _send_order {
     }
 
     func::email(%letter);
+
+    if ($order->{data}->{email}) {
+        my %letter = (
+            to          => $order->{data}->{email},
+            subject     => "Вы сделали заказ",
+            body        => $body,
+        );
+        func::email(%letter);
+    }
 
     return $file;
 }
