@@ -16,7 +16,7 @@ hook before => sub {
     var orders_dir => path(config->{public}, 'upload', 'orders');
 
     if (params->{_openstat}) {
-        cookie _openstat => 1, http_only => 0;
+        cookie _openstat => 1, http_only => 0, expires => '1 month';
     }
 
     if (request->path_info =~ m!^/admin!) {
