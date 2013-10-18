@@ -185,6 +185,7 @@ sub _send_order {
         {}, { layout => 'blank.tpl' }
     );
 
+    # Отправка заказа менеджеру
     my %letter = (
         to          => vars->{glob_vars}->{email},
         subject     => "Новый заказ (№ $order->{data}->{id})",
@@ -215,6 +216,7 @@ sub _send_order {
 
     func::email(%letter);
 
+    # Отправка заказа покупателю
     if ($order->{data}->{email}) {
         my %letter = (
             to          => $order->{data}->{email},
@@ -223,6 +225,11 @@ sub _send_order {
         );
         func::email(%letter);
     }
+
+    func::send_sms(
+        phone   => $order->{data}->{phone},
+        message => "Номер Вашего заказа - $order->{data}->{id}",
+    );
 
     return $file;
 }

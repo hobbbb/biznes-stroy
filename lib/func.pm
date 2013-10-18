@@ -11,6 +11,7 @@ use MIME::Lite;
 use MIME::Base64;
 use Encode qw/encode/;
 use Time::Local;
+use LWP::UserAgent;
 use SCM::utils;
 
 sub products_get_image {
@@ -91,6 +92,35 @@ sub email {
             unlink $_->{Path} if -f $_->{Path};
         }
     }
+}
+
+sub send_sms {
+    my %params = @_;
+    return unless ($params{phone} and $params{message});
+
+    my $url = 'http://www.smstraffic.ru/multi.php';
+
+    my $ua = LWP::UserAgent->new(max_redirect => 0);
+    $ua->timeout(5);
+
+    my $p = {
+        login        => 'biznesstroy',
+        password     => 'qiwebola',
+        phones       => $params{phone},
+        message      => $params{message},
+        rus          => 5,
+        originator   => 'BiznesStroy',
+        flash        => 0,
+        autotrancate => 1,
+    };
+
+    my $rsp = $ua->post($url, $p);
+    unless ($rsp->is_success) {
+        $url = 'http://www2.smstraffic.ru/multi.php';
+        $rsp = $ua->post($url, $p);
+    }
+
+    return $rsp->content;
 }
 
 sub now {

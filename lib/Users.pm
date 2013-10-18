@@ -26,6 +26,11 @@ prefix '/auth' => sub {
                 $form->{x_real_ip} = request->{env}->{HTTP_X_REAL_IP};
                 database->quick_insert('users', $form);
 
+                func::send_sms(
+                    phone   => $form->{phone},
+                    message => 'Вы зарегистрировались на сайте.',
+                );
+
                 if (_login($form->{email}, $form->{password}, 1)) {
                     return redirect 'http://'. request->host .'/';
                 }
@@ -45,7 +50,7 @@ prefix '/auth' => sub {
         template 'auth.tpl', { referer => params->{referer} || request->referer };
     };
 
-    post '/restore/' => sub { # TODO: remake method
+    post '/restore/' => sub {
         return redirect 'http://'. request->host .'/' if check_auth();
 
         my $p = {};
@@ -57,7 +62,7 @@ prefix '/auth' => sub {
             my $user = database->quick_select('users', { email => $p->{form}->{email} });
             if ($user) {
                 my $body = engine('template')->apply_layout(
-                    engine('template')->apply_renderer('email/restore.tpl', $user),
+                    engine('template')->apply_renderer('email/restore.tpl', { user => $user }),
                     {}, { layout => 'blank.tpl' }
                 );
                 func::email(
@@ -65,7 +70,13 @@ prefix '/auth' => sub {
                     subject => 'Восстановление пароля',
                     body    => $body,
                 );
-                # return redirect 'http://'. request->host .'/auth/';
+
+                if ($user->{phone}) {
+                    func::send_sms(
+                        phone   => $user->{phone},
+                        message => "Ваш пароль для входа - $user->{password}",
+                    );
+                }
             }
             else {
                 $p->{err}->{email_not_exist} = 1;
