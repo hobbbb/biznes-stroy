@@ -1,1 +1,1 @@
-Ваш пароль: [% password %]
+Ваш пароль: [% user.password %]

@@ -68,7 +68,7 @@
                     </li>
                     <li>
                         <label class="label">Телефон:</label>
-                        <input type="text" name="phone" value="[% form.phone %]" [% 'class="red"' IF err.phone %] placeholder="9261234567" />
+                        <input type="text" name="phone" value="[% form.phone %]" placeholder="+79261234567" class="js_phone_format [% 'red' IF err.phone %]" />
                     </li>
                     <li>
                         <label class="label">ФИО:</label>

@@ -11,7 +11,7 @@
                 <input type="text" name="email" value="[% form.email %]" placeholder="E-mail" [% 'class="f_err"' IF err.email %] /> <span class="Requirement">*</span>
                 [% '<span class="err">Такой E-mail уже существует</span>' IF err.email_exist %]
             </p>
-            <p><input type="text" name="phone" value="[% form.phone %]" placeholder="Телефон" [% 'class="f_err"' IF err.phone %] /> <span class="Requirement">*</span></p>
+            <p><input type="text" name="phone" value="[% form.phone %]" placeholder="Телефон" class="js_phone_format [% 'f_err' IF err.phone %]" /> <span class="Requirement">*</span></p>
             <p><input type="text" name="fio" value="[% form.fio %]" placeholder="ФИО" [% 'class="f_err"' IF err.fio %] /> <span class="Requirement">*</span></p>
             <p><input type="text" name="address" value="[% form.address %]" placeholder="Адрес" [% 'class="f_err"' IF err.address %] /></p>
             <p><input type="password" name="password" placeholder="Пароль" [% 'class="f_err"' IF err.password %] /></p>

@@ -17,7 +17,7 @@
     <script type="text/javascript" src="/javascripts/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="/javascripts/jquery-ui.js?v=2013_05_22_23_50"></script>
     <script type="text/javascript" src="/javascripts/jinit.js?v=2013_10_08_09_38"></script>
-    <script type="text/javascript" src="/javascripts/main.js?v=2013_10_03_10_00"></script>
+    <script type="text/javascript" src="/javascripts/main.js?v=2013_10_18_16_00"></script>
 
     <!--[if lte IE 7]><link href="/css/ie7.css" rel="stylesheet" type="text/css" /><![endif]-->
     <!--[if lte IE 8]>
@@ -97,7 +97,7 @@
 
                 <div class="wrap">
                     <div class="holder">
-                        <a class="link bg-orange" href="/categories/sale/"><span class="c"><span class="cell">
+                        <a class="link [% 'bg-orange' IF 0 %]" href="/categories/sale/"><span class="c"><span class="cell">
                             <!--[if lte IE 7]><span><span><![endif]-->РАСПРОДАЖА<!--[if lte IE 7]></span></span><![endif]-->
                         </span></span></a>
                     </div>

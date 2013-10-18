@@ -19,6 +19,22 @@ $(document).ready(function(){
     else {
         $('.js_phone').html('(495) 215-03-07');
     }
+
+    $('.js_phone_format').each(function() {
+        var $f = $(this);
+        var val = $f.val();
+        if (val) {
+            $f.val('+7' + val);
+        }
+        else {
+            $f.val('+7');
+        }
+    });
+    $('.js_phone_format').keyup(function() {
+        var $f = $(this);
+        var val = $f.val();
+        if (!/^\+7/.test(val)) $f.val('+7');
+    });
 });
 
 var browser = {};
