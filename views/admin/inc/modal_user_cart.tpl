@@ -16,19 +16,22 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="phone">Телефон</label>
+                <div class="controls">
+                    <input type="text" id="phone" name="phone" value="" placeholder="Телефон">
+                    <span class="label label-important hide js_phone_exists">Такой телефон уже существует</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="fio">ФИО</label>
+                <div class="controls"><input type="text" id="fio" name="fio" value="" data-val="Вальтер Эго" placeholder="ФИО"></div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="email">Email</label>
                 <div class="controls">
                     <input type="text" id="email" name="email" value="" placeholder="Email">
                     <span class="label label-important hide js_email_exists">Такой E-mail уже существует</span>
                 </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="phone">Телефон</label>
-                <div class="controls"><input type="text" id="phone" name="phone" value="" placeholder="Телефон"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="fio">ФИО</label>
-                <div class="controls"><input type="text" id="fio" name="fio" value="" data-val="Вальтер Эго" placeholder="ФИО"></div>
             </div>
 
             <div class="hide" id="js_ur_block">

@@ -27,6 +27,8 @@ hook before => sub {
     }
 
     my $glob_vars = [ database->quick_select('glob_vars', {}) ];
+    var glob_vars_array => $glob_vars;
+
     my $gb;
     for (@$glob_vars) {
         my @s = split /\./, $_->{name};

@@ -161,6 +161,8 @@ sub _check_order {
     }
     $form->{users_id} ||= 0;
 
+    $form->{phone} =~ s/^\+7//;
+
     $err->{shipping} = 1 unless $form->{shipping};
     $err->{payment}  = 1 unless $form->{payment};
     $err->{phone}    = 1 if $form->{phone} !~ /^\d{10}$/;
@@ -226,9 +228,12 @@ sub _send_order {
         func::email(%letter);
     }
 
+    my $_openstat = cookie '_openstat';
+    my $phone = $_openstat ? vars->{glob_vars}->{shop}->{phone_openstat} : vars->{glob_vars}->{shop}->{phone};
+
     func::send_sms(
         phone   => $order->{data}->{phone},
-        message => "Номер Вашего заказа - $order->{data}->{id}",
+        message => "Номер Вашего заказа - $order->{data}->{id}. Телефон магазина: $phone",
     );
 
     return $file;

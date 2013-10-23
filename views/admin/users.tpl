@@ -23,8 +23,8 @@
                     <tr>
                         <th class="span1"></th>
                         <th>ФИО</th>
-                        <th>E-mail</th>
                         <th>Телефон</th>
+                        <th>E-mail</th>
                         <th>Суммарная покупка</th>
                         <th>Адрес</th>
                         <th>X_REAL_IP</th>
@@ -37,8 +37,8 @@
                     <tr>
                         <td>[% '<i class="icon-signal"></i>' IF i.online %]</td>
                         <td>[% i.fio %]</td>
-                        <td>[% i.email %]</td>
                         <td>[% i.phone %]</td>
+                        <td>[% i.email %]</td>
                         <td>[% i.summary_buy %]</td>
                         <td>[% i.address %]</td>
                         <td>[% i.x_real_ip %]</td>
@@ -92,20 +92,23 @@
                         </select>
                     </div>
                 </div>
+                <div class="control-group [% 'error' IF err.phone %]">
+                    <label class="control-label" for="phone">Телефон</label>
+                    <div class="controls">
+                        <input type="text" id="phone" name="phone" value="[% form.phone | html %]" placeholder="Телефон" class="span12">
+                        [% '<span class="label label-important">Такой телефон уже существует</span>' IF err.phone_exist %]
+                    </div>
+                </div>
+                <div class="control-group [% 'error' IF err.fio %]">
+                    <label class="control-label" for="fio">ФИО</label>
+                    <div class="controls"><input type="text" id="fio" name="fio" value="[% form.fio | html %]" placeholder="ФИО" class="span12"></div>
+                </div>
                 <div class="control-group [% 'error' IF err.email %]">
                     <label class="control-label" for="email">Email</label>
                     <div class="controls">
                         <input type="text" id="email" name="email" value="[% form.email | html %]" placeholder="Email" class="span12">
                         [% '<span class="label label-important">Такой E-mail уже существует</span>' IF err.email_exist %]
                     </div>
-                </div>
-                <div class="control-group [% 'error' IF err.phone %]">
-                    <label class="control-label" for="phone">Телефон</label>
-                    <div class="controls"><input type="text" id="phone" name="phone" value="[% form.phone | html %]" placeholder="Телефон" class="span12"></div>
-                </div>
-                <div class="control-group [% 'error' IF err.fio %]">
-                    <label class="control-label" for="fio">ФИО</label>
-                    <div class="controls"><input type="text" id="fio" name="fio" value="[% form.fio | html %]" placeholder="ФИО" class="span12"></div>
                 </div>
                 <div class="control-group [% 'error' IF err.address %]">
                     <label class="control-label" for="address">Адрес</label>

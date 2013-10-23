@@ -9,7 +9,7 @@
         <p>[% order.data.products %]</p>
 
     [% ELSE %]
-        <form action="" method="post" enctype="multipart/form-data" id="js_shopping_cart">
+        <form action="" method="post" enctype="multipart/form-data" id="js_shopping_cart" onsubmit="yaCounterXXXXXX.reachGoal('ORDER2'); return true;">
         <input type="hidden" name="users_id" value="[% vars.loged.id %]">
         <input type="hidden" name="fio" value="[% vars.loged.fio %]">
         <input type="hidden" name="email" value="[% vars.loged.email %]">

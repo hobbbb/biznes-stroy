@@ -55,6 +55,12 @@ get '/to/:action/:id/' => sub {
         my $order = database->quick_select('orders', { id => params->{id}, status => 'new' });
         if ($order->{id}) {
             database->quick_update('orders', { id => $order->{id} }, { status => 'process', managers_id => $loged->{id} });
+
+            func::send_sms(
+                phone   => $order->{phone},
+                message => "Заказ номер $order->{id} взят в обработку. Ваш менеджер - $loged->{fio}",
+            );
+
             return redirect "http://". request->host ."/admin/orders/process/";
         }
     }

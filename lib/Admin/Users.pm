@@ -137,9 +137,9 @@ sub _check_admin_user {
     $form->{type}     ||= 'ph';
 
     $err->{phone}                   = 1 if $form->{phone} !~ /^\d+$/;
-    $err->{email}                   = 1 if $form->{email} !~ /^.+@.+\.[a-z]{2,4}$/;
     $err->{fio}                     = 1 if length($form->{fio}) < 3;
     $err->{password}                = 1 if $form->{password} !~ /^.{6,50}$/;
+    $err->{email}                   = 1 if $form->{email} and $form->{email} !~ /^.+@.+\.[a-z]{2,4}$/;
     $err->{partner_discount}        = 1 if $form->{partner_discount} and $form->{partner_discount} !~ /^\d{1,2}$/;
 
     if ($form->{type} eq 'ur') {
@@ -155,13 +155,14 @@ sub _check_admin_user {
         map { $err->{$_} = 1 unless $form->{$_} } qw/firm inn/;
     }
 
-    if ($regcode) {
-        $err->{email} = $err->{email_exist} = 1 if database->quick_select('users', { email => $form->{email}, regcode => { 'ne' => $regcode } });
-        $err->{inn} = $err->{inn_exist} = 1 if $form->{inn} and database->quick_select('users', { inn => $form->{inn}, regcode => { 'ne' => $regcode } });
-    }
-    else {
-        $err->{email} = $err->{email_exist} = 1 if database->quick_select('users', { email => $form->{email} });
-        $err->{inn} = $err->{inn_exist} = 1 if $form->{inn} and database->quick_select('users', { inn => $form->{inn} });
+    for my $f (qw/phone email inn/) {
+        next unless $form->{$f};
+
+        my $where = { $f => $form->{$f} };
+        if ($regcode) {
+            $where->{regcode} = { 'ne' => $regcode };
+        }
+        $err->{$f} = $err->{"$f\_exist"} = 1 if database->quick_select('users', $where);
     }
 
     map { delete $form->{$_} unless $form->{$_} } qw/partner_discount role firm ogrn inn kpp legal_address actual_address general_manager main_accountant

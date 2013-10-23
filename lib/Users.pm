@@ -23,15 +23,16 @@ prefix '/auth' => sub {
             unless (scalar keys %$err) {
                 $form->{registered} = func::now();
                 $form->{regcode} = func::generate();
+                $form->{password} = func::generate(8);
                 $form->{x_real_ip} = request->{env}->{HTTP_X_REAL_IP};
                 database->quick_insert('users', $form);
 
                 func::send_sms(
                     phone   => $form->{phone},
-                    message => 'Вы зарегистрировались на сайте.',
+                    message => "Вы зарегистрировались на сайте " . request->host . ", пароль $form->{password}",
                 );
 
-                if (_login($form->{email}, $form->{password}, 1)) {
+                if (_login($form->{phone}, $form->{password}, 1)) {
                     return redirect 'http://'. request->host .'/';
                 }
             }
@@ -43,7 +44,7 @@ prefix '/auth' => sub {
     post '/login/' => sub {
         return redirect 'http://'. request->host .'/' if check_auth();
 
-        if (_login(params->{email}, params->{password}, params->{remember})) {
+        if (_login(params->{phone}, params->{password}, params->{remember})) {
             return redirect params->{referer};
         }
 
@@ -53,14 +54,22 @@ prefix '/auth' => sub {
     post '/restore/' => sub {
         return redirect 'http://'. request->host .'/' if check_auth();
 
-        my $p = {};
+        my $user;
+        if (params->{phone}) {
+            $user = database->quick_select('users', { phone => params->{phone} });
+        }
+        elsif (params->{email}) {
+            $user = database->quick_select('users', { email => params->{email} });
+        }
 
-        $p->{form}->{email} = params->{email};
-        $p->{err}->{email} = 1 unless $p->{form}->{email};
-
-        unless (scalar keys %{$p->{err}}) {
-            my $user = database->quick_select('users', { email => $p->{form}->{email} });
-            if ($user) {
+        if ($user) {
+            if (params->{phone}) {
+                func::send_sms(
+                    phone   => $user->{phone},
+                    message => "Ваш пароль: $user->{password}",
+                );
+            }
+            elsif (params->{email}) {
                 my $body = engine('template')->apply_layout(
                     engine('template')->apply_renderer('email/restore.tpl', { user => $user }),
                     {}, { layout => 'blank.tpl' }
@@ -70,16 +79,6 @@ prefix '/auth' => sub {
                     subject => 'Восстановление пароля',
                     body    => $body,
                 );
-
-                if ($user->{phone}) {
-                    func::send_sms(
-                        phone   => $user->{phone},
-                        message => "Ваш пароль для входа - $user->{password}",
-                    );
-                }
-            }
-            else {
-                $p->{err}->{email_not_exist} = 1;
             }
         }
 
@@ -118,30 +117,37 @@ sub _check_user {
     my ($params, $regcode) = @_;
     my ($form, $err) = ({},{});
 
-    for (qw/phone fio email address password password2 code/) {
+    for (qw/phone fio email address password notify_news code/) {
         $form->{$_} = $params->{$_};
     }
-    $form->{email} = lc $form->{email};
-    $form->{email} = func::trim($form->{email});
+    $form->{email} = func::trim(lc $form->{email});
+    $form->{notify_news} = $form->{notify_news} ? 1 : 0;
 
-    $err->{phone} = 1 if $form->{phone} !~ /^\d{10}$/;
-    $err->{email} = 1 if $form->{email} !~ /^.+@.+\.[a-z]{2,4}$/;
-    $err->{fio} = 1 if length($form->{fio}) < 3;
-    $err->{address} = 1 if ($form->{address} and $form->{address} =~ /(ftp|http|\.ru|\.org|\.com)/);
+    $form->{phone} =~ s/^\+7//;
+
+    $err->{phone}   = 1 if $form->{phone} !~ /^\d{10}$/;
+    $err->{fio}     = 1 if length($form->{fio}) < 3;
+    $err->{email}   = 1 if $form->{email} and $form->{email} !~ /^.+@.+\.[a-z]{2,4}$/;
+    $err->{address} = 1 if $form->{address} and $form->{address} =~ /(ftp|http|\.ru|\.org|\.com)/;
+
     if ($regcode) {
-        $err->{email} = $err->{email_exist} = 1 if database->quick_select('users', { email => $form->{email}, regcode => { 'ne' => $regcode } });
         if ($form->{password}) {
-            $err->{password} = $err->{password2} = 1 if $form->{password} !~ /^.{6,50}$/ or $form->{password} ne $form->{password2};
+            $err->{password} = 1 if $form->{password} !~ /^.{6,50}$/;
         }
         else {
             delete $form->{password};
         }
     }
-    else {
-        $err->{password} = $err->{password2} = 1 if $form->{password} !~ /^.{6,50}$/ or $form->{password} ne $form->{password2};
-        $err->{email} = $err->{email_exist} = 1 if database->quick_select('users', { email => $form->{email} });
+
+    for my $f (qw/phone email/) {
+        next unless $form->{$f};
+
+        my $where = { $f => $form->{$f} };
+        if ($regcode) {
+            $where->{regcode} = { 'ne' => $regcode };
+        }
+        $err->{$f} = $err->{"$f\_exist"} = 1 if database->quick_select('users', $where);
     }
-    delete $form->{password2};
 
     $err->{code} = 1 if $form->{code};
     delete $form->{code};
@@ -150,10 +156,11 @@ sub _check_user {
 }
 
 sub _login {
-    my ($email, $password, $remember) = @_;
+    my ($phone, $password, $remember) = @_;
 
-    if ($email and $password) {
-        my $regcode = database->quick_lookup('users', { email => $email, password => $password }, 'regcode');
+    if ($phone and $password) {
+        $phone =~ s/^\+7//;
+        my $regcode = database->quick_lookup('users', { phone => $phone, password => $password }, 'regcode');
         if ($regcode) {
             if ($remember) {
                 cookie code => $regcode, expires => '1 year';

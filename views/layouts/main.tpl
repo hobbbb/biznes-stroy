@@ -8,7 +8,7 @@
     <meta name="keywords" content="[% seo_keywords || 'biznes-stroy.ru' %]" />
 
     <link rel="stylesheet" type="text/css" href="/css/base.css" />
-    <link rel="stylesheet" type="text/css" href="/css/style.css?v=2013_09_20_12_00" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css?v=2013_10_22_16_00" />
     <link rel="stylesheet" type="text/css" href="/css/smoothness/jquery-ui.css?v=2013_09_13_17_50" />
 
     <script type="text/javascript" src="/javascripts/jquery.js?v=2013_08_30_13_20"></script>
@@ -17,7 +17,7 @@
     <script type="text/javascript" src="/javascripts/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="/javascripts/jquery-ui.js?v=2013_05_22_23_50"></script>
     <script type="text/javascript" src="/javascripts/jinit.js?v=2013_10_08_09_38"></script>
-    <script type="text/javascript" src="/javascripts/main.js?v=2013_10_18_16_00"></script>
+    <script type="text/javascript" src="/javascripts/main.js?v=2013_10_23_15_30"></script>
 
     <!--[if lte IE 7]><link href="/css/ie7.css" rel="stylesheet" type="text/css" /><![endif]-->
     <!--[if lte IE 8]>
@@ -26,8 +26,8 @@
     <![endif]-->
     <script>
         var GLOB = new Object();
-        [%- FOR k IN vars.glob_vars -%]
-            GLOB['[% k.key %]'] = '[% vars.glob_vars.${k.key} | html %]';
+        [%- FOR k IN vars.glob_vars_array -%]
+            GLOB['[% k.name %]'] = '[% k.val | html %]';
         [%- END -%]
     </script>
 </head>
@@ -85,13 +85,14 @@
             <!-- end .head-bg-->
 
             <div class="main-menu">
-                <form class="search2" action="/search/" method="get">
-                    <fieldset>
-                        <input type="text" id="js_search" name="search_word" value="Поиск инструмента" onfocus="this.value==this.defaultValue?this.value='':''" onblur="this.value==''?this.value=this.defaultValue:''" />
-                        <input value="" type="submit" />
-                    </fieldset>
-                </form>
-                <!-- end .search2-->
+                [% UNLESS request.path.search('/(shopping_cart|cashless)/') %]
+                    <form class="search2" action="/search/" method="get">
+                        <fieldset>
+                            <input type="text" id="js_search" name="search_word" value="Поиск инструмента" onfocus="this.value==this.defaultValue?this.value='':''" onblur="this.value==''?this.value=this.defaultValue:''" />
+                            <input value="" type="submit" />
+                        </fieldset>
+                    </form>
+                [% END %]
 
                 [% INCLUDE tree tree = categories_tree first = 1 %]
 
@@ -221,6 +222,7 @@
     <!-- end .footer-block-->
 </body>
 
+[% IF settings.environment == 'production' %]
     <!--LiveInternet counter--><script type="text/javascript"><!--
     new Image().src = "//counter.yadro.ru/hit?r"+
     escape(document.referrer)+((typeof(screen)=="undefined")?"":
@@ -255,6 +257,8 @@
     </script>
     <noscript><div><img src="//mc.yandex.ru/watch/12609058" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
+[% END %]
+
 </html>
 
 

@@ -237,7 +237,11 @@ $(function() {
         }
         else {
             $('#js_ur_block', $form).hide();
+            $form.find('.js_phone_exists').hide();
+            $form.find('.js_email_exists').hide();
             $('input, select, textarea', $form).each(function() {
+                $(this).closest('div.control-group').removeClass('error');
+
                 if ($(this).data('val'))
                     $(this).val($(this).data('val'));
                 else
@@ -266,12 +270,15 @@ $(function() {
                     $form.find('div.control-group').each(function() {
                         $(this).removeClass('error');
                     });
+                    $form.find('.js_phone_exists').hide();
                     $form.find('.js_email_exists').hide();
 
                     for (var f in ans.err) {
                         $form.find('#' + f).closest('div.control-group').addClass('error');
                     }
 
+                    if (ans.err.phone_exist)
+                        $form.find('.js_phone_exists').show();
                     if (ans.err.email_exist)
                         $form.find('.js_email_exists').show();
                 }

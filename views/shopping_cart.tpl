@@ -8,7 +8,7 @@
     [% ELSE %]
         <p class="err [% 'dnone' UNLESS err.no_products OR !products.size %]" id="js_shopping_cart_empty">Нет ни одного товара для заказа</p>
 
-        <form action="" method="post" id="js_shopping_cart" [% 'class="dnone"' IF !products.size OR err.no_products %] enctype="multipart/form-data">
+        <form action="" method="post" id="js_shopping_cart" [% 'class="dnone"' IF !products.size OR err.no_products %] enctype="multipart/form-data" onsubmit="yaCounterXXXXXX.reachGoal('ORDER1'); return true;">
             <div class="clearfix">
                 <table class="cart">
                 [%
@@ -71,14 +71,16 @@
 
             <div class="total">
                 <span style="float: left;">
+                [% IF 0 %]
                     [% IF vars.loged AND !vars.loged.is_partner AND !vars.loged.acs.keys %]
                         [% discount = INCLUDE inc/discount_program.tpl summary_buy = overal + vars.loged.summary_buy %]
                         [% IF discount > 0 %]
-                            <!--div><strong>Старая цена: [% overal %] руб.<br></strong></div>
-                            <div><strong>Новая цена: [% SET overal = overal - overal * discount / 100; overal; %] руб.<br></strong></div-->
+                            <div><strong>Старая цена: [% overal %] руб.<br></strong></div>
+                            <div><strong>Новая цена: [% SET overal = overal - overal * discount / 100; overal; %] руб.<br></strong></div>
                         [% END %]
                     [% ELSE %]
                     [% END %]
+                [% END %]
 
                     Общая стоимость без учета доставки: <strong><span id="js_shopping_cart_total">[% total %]</span> руб.</strong>
                     <div id="js_total_with_delivery" class="dnone">Общая стоимость с доставкой: <strong>[% total %] руб.</strong></div>

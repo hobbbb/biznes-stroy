@@ -13,11 +13,11 @@ var liveTex = true,
 
 $(document).ready(function(){
     if ($.cookie('_openstat')) {
-        $('.js_phone').html('(499) 653-79-81');
+        $('.js_phone').html(GLOB['shop.phone_openstat']);
         $('#js_contacts').attr('href', '/kontakty.html');
     }
     else {
-        $('.js_phone').html('(495) 215-03-07');
+        $('.js_phone').html(GLOB['shop.phone']);
     }
 
     $('.js_phone_format').each(function() {

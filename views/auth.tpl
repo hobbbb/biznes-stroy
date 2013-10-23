@@ -7,8 +7,8 @@
                     <h3>Вход в личный кабинет</h3>
                     <ul>
                         <li>
-                            <label class="label">E-mail:</label>
-                            <input type="text" name="email" />
+                            <label class="label">Телефон:</label>
+                            <input type="text" name="phone" class="js_phone_format" />
                         </li>
                         <li>
                             <label class="label">Пароль:</label>
@@ -36,6 +36,11 @@
                         <h3>Заполните данную форму</h3>
                         <ul class="ind2">
                             <li>
+                                <label class="label">Телефон:</label>
+                                <input type="text" name="phone" class="js_phone_format" />
+                            </li>
+                            <li>или</li>
+                            <li>
                                 <label class="label">E-mail:</label>
                                 <input type="text" name="email" />
                             </li>
@@ -60,6 +65,17 @@
                 <h3>Регистрация</h3>
                 <ul class="ind2">
                     <li>
+                        <label class="label">Телефон:</label>
+                        <input type="text" name="phone" value="[% form.phone %]" class="js_phone_format [% 'red' IF err.phone %]" />
+                    </li>
+                    <li>
+                        [% '<span class="err">Такой телефон уже существует</span>' IF err.phone_exist %]
+                    </li>
+                    <li>
+                        <label class="label">ФИО:</label>
+                        <input type="text" name="fio" value="[% form.fio %]" [% 'class="red"' IF err.fio %] />
+                    </li>
+                    <li>
                         <label class="label">E-mail:</label>
                         <input type="text" name="email" value="[% form.email %]" [% 'class="red"' IF err.email %] />
                     </li>
@@ -67,24 +83,14 @@
                         [% '<span class="err">Такой E-mail уже существует</span>' IF err.email_exist %]
                     </li>
                     <li>
-                        <label class="label">Телефон:</label>
-                        <input type="text" name="phone" value="[% form.phone %]" placeholder="+79261234567" class="js_phone_format [% 'red' IF err.phone %]" />
-                    </li>
-                    <li>
-                        <label class="label">ФИО:</label>
-                        <input type="text" name="fio" value="[% form.fio %]" [% 'class="red"' IF err.fio %] />
-                    </li>
-                    <li>
                         <label class="label">Адрес:</label>
                         <input type="text" name="address" value="[% form.address %]" [% 'class="red"' IF err.address %] />
                     </li>
                     <li>
-                        <label class="label">Пароль:</label>
-                        <input type="password" name="password" value="[% form.password %]" [% 'class="red"' IF err.password %] />
-                    </li>
-                    <li>
-                        <label class="label">Повторить пароль:</label>
-                        <input type="password" name="password2" value="[% form.password2 %]" [% 'class="red"' IF err.password2 %] />
+                        <span class="check">
+                            <input id="check1" class="customCheckbox" type="checkbox" name="notify_news" value="1" checked />
+                            <label for="check1">Подписка на новости</label>
+                        </span>
                     </li>
                     <li class="dnone">
                         <input type="text" name="code"  placeholder="5+3" />
