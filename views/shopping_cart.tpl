@@ -162,7 +162,7 @@
                 </div-->
             </div>
 
-            <div class="center"><button class="btn-orange green" type="submit"><span class="arr">Оформить заказ</span></button></div>
+            <div class="center"><button class="btn-orange red" type="submit"><span class="arr">Подтвердить заказ</span></button></div>
         </form>
     [% END %]
     </div>

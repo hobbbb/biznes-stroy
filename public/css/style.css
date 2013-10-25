@@ -845,6 +845,11 @@ table .sep {
 	border-color:#0b9444;
 }
 
+.btn-orange.red {
+	background:#FB0606;
+	border-color:#FB0606;
+}
+
 .btn-orange.grey {
 	background:#edeeef;
 	border-color:#cad5de;

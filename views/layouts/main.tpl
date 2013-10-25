@@ -8,7 +8,7 @@
     <meta name="keywords" content="[% seo_keywords || 'biznes-stroy.ru' %]" />
 
     <link rel="stylesheet" type="text/css" href="/css/base.css" />
-    <link rel="stylesheet" type="text/css" href="/css/style.css?v=2013_10_22_16_00" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css?v=2013_10_25_11_00" />
     <link rel="stylesheet" type="text/css" href="/css/smoothness/jquery-ui.css?v=2013_09_13_17_50" />
 
     <script type="text/javascript" src="/javascripts/jquery.js?v=2013_08_30_13_20"></script>
