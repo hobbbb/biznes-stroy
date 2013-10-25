@@ -39,7 +39,7 @@
             <div class="in">
                 <div class="dnone" id="js_basket_full">
                     <p>В вашей корзине <strong id="js_basket_qnt"></strong> товар(ов)<br />на сумму <strong id="js_basket_sum"></strong> руб.</p>
-                    <a class="btn-orange grey" href="/shopping_cart/">Оформить заказ</a>
+                    <a class="btn-orange red" href="/shopping_cart/">Оформить заказ</a>
                 </div>
                 <div id="js_basket_empty">Нет заказов</div>
             </div>
