@@ -15,6 +15,7 @@ $(function(){
                 success: function(ans) {
                     $el.closest('tr').remove();
                     var linked_del = $el.closest('tr').data('linked_del');
+                    console.log(linked_del)
                     if (linked_del)
                         $('.js_linked_del_' + linked_del).remove();
                 }
@@ -154,25 +155,25 @@ $(function() {
 //------------------------------ Orders -----------------------------
 $(function() {
     $('.js_order_process').click(function(){
-        if (confirm('Взять заказ в обработку?')) {
+        if (confirm('Взять заказ в работу?')) {
             var url = $(this).data('url');
             location.href = url;
         }
     });
-    $('.js_order_new').click(function(){
-        if (confirm('Отказаться от обработки?')) {
-            var url = $(this).data('url');
-            location.href = url;
-        }
-    });
+    // $('.js_order_new').click(function(){
+    //     if (confirm('Отказаться от обработки?')) {
+    //         var url = $(this).data('url');
+    //         location.href = url;
+    //     }
+    // });
     $('.js_order_done').click(function(){
-        if (confirm('Переместить заказ в завершенные?')) {
+        if (confirm('Завершить заказ?')) {
             var url = $(this).data('url');
             location.href = url;
         }
     });
     $('.js_order_cancel').click(function(){
-        if (confirm('Переместить заказ в отмененные?')) {
+        if (confirm('Отменить заказ?')) {
             var url = $(this).data('url');
             location.href = url;
         }

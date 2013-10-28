@@ -16,7 +16,7 @@
     <script type="text/javascript" src="/javascripts/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="/javascripts/jquery-ui.js?v=2013_05_22_23_50"></script>
     <script type="text/javascript" src="/javascripts/bootstrap.js"></script>
-    <script type="text/javascript" src="/javascripts/admin.js?v=2013_10_23_10_30"></script>
+    <script type="text/javascript" src="/javascripts/admin.js?v=2013_10_28_13_50"></script>
     <script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
 
     <link rel="shortcut icon" href="[% request.uri_base %]/favicon.ico">
@@ -39,7 +39,9 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Заказы <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/admin/orders/new/">Поступившие</a></li>
-                                <li><a href="/admin/orders/process/">В обработке</a></li>
+                                <li><a href="/admin/orders/process/">В работе</a></li>
+                                <li><a href="/admin/orders/pickup/">В самовывозе</a></li>
+                                <li><a href="/admin/orders/delivery/">В доставке</a></li>
                                 <li><a href="/admin/orders/done/">Завершенные</a></li>
                                 <li><a href="/admin/orders/cancel/">Отмененные</a></li>
                                 [% IF vars.loged.acs.admin %]

@@ -21,6 +21,8 @@ get '/:status/' => sub {
     my $loged = vars->{loged};
     my $p = { status => params->{status} };
 
+    $p->{type} = params->{type};
+
     $p->{managers} = [ database->quick_select('users', { role => ['admin', 'manager'] }) ];
 
     if ($p->{status} eq 'month') {
@@ -29,7 +31,10 @@ get '/:status/' => sub {
     else {
         my $where = { status => $p->{status} };
         if ($p->{status} ne 'new') {
-            $where->{managers_id} = $loged->{id} if $loged->{role} eq 'manager';
+            $where->{managers_id} = $loged->{id};
+            if ($p->{type} and $p->{type} eq 'all' and $loged->{role} eq 'admin') {
+                delete $where->{managers_id};
+            }
         }
 
         $p->{orders} = [ database->quick_select('orders', $where, { order_by => { 'desc' => 'registered' } }) ];
@@ -58,31 +63,91 @@ get '/to/:action/:id/' => sub {
 
             func::send_sms(
                 phone   => $order->{phone},
-                message => "Заказ номер $order->{id} взят в обработку. Ваш менеджер - $loged->{fio}",
+                message => "Заказ №$order->{id} взят в работу. $loged->{fio}",
             );
 
             return redirect "http://". request->host ."/admin/orders/process/";
         }
     }
-    elsif (params->{action} eq 'new') {
-        my $order = database->quick_select('orders', { id => params->{id}, status => 'process', managers_id => $loged->{id} });
-        if (!$order->{bills_id} and $order->{id}) {
-            database->quick_update('orders', { id => $order->{id} }, { status => 'new', managers_id => undef });
-        }
-    }
-    elsif (params->{action} eq 'done') {
-        my $order = database->quick_select('orders', { id => params->{id}, status => 'process', managers_id => $loged->{id} });
-        if (!$order->{bills_id} and $order->{id}) {
-            database->quick_update('orders', { id => $order->{id} }, { status => 'done' });
-        }
-    }
     elsif (params->{action} eq 'cancel') {
-        my $order = database->quick_select('orders', { id => params->{id}, status => 'process', managers_id => $loged->{id} });
+        my $order = database->quick_select('orders', { id => params->{id} });
         if ($order->{id}) {
             database->quick_update('orders', { id => $order->{id} }, { status => 'cancel' });
             if ($order->{bills_id}) {
                 database->quick_delete('bills', { id => $order->{bills_id} });
             }
+
+            if (params->{reason} and params->{reason} eq 'not_available') {
+                func::send_sms(
+                    phone   => $order->{phone},
+                    message => "По заказу №$order->{id} товара нет в наличии.",
+                );
+            }
+            else {
+                func::send_sms(
+                    phone   => $order->{phone},
+                    message => "Заказ №$order->{id} отменен.",
+                );
+            }
+        }
+    }
+    # elsif (params->{action} eq 'new') {
+    #     my $order = database->quick_select('orders', { id => params->{id}, status => 'process', managers_id => $loged->{id} });
+    #     if (!$order->{bills_id} and $order->{id}) {
+    #         database->quick_update('orders', { id => $order->{id} }, { status => 'new', managers_id => undef });
+    #     }
+    # }
+    elsif (params->{action} eq 'pickup') {
+        my $order = database->quick_select('orders', { id => params->{id}, status => 'process', shipping => 'self', managers_id => $loged->{id} });
+        if (!$order->{bills_id} and $order->{id}) {
+            database->quick_update('orders', { id => $order->{id} }, { status => 'pickup' });
+
+            func::send_sms(
+                phone   => $order->{phone},
+                message => "Заказ №$order->{id} доставлен на точку самовывоза: рынок мельница.",
+            );
+        }
+
+        return redirect "http://". request->host ."/admin/orders/process/";
+    }
+    elsif (params->{action} eq 'delivery') {
+        my $order = database->quick_select('orders', { id => params->{id}, status => 'process', shipping => [qw/delivery delivery_mkad/], managers_id => $loged->{id} });
+        if (!$order->{bills_id} and $order->{id}) {
+            database->quick_update('orders', { id => $order->{id} }, { status => 'delivery' });
+
+            my $product_list = [ database->quick_select('orders_products', { orders_id => $order->{id} }) ];
+
+            my $body = engine('template')->apply_layout(
+                engine('template')->apply_renderer('email/order.tpl', { order => { data => $order, product_list => $product_list } }),
+                {}, { layout => 'blank.tpl' }
+            );
+
+            func::send_sms(
+                phone   => $order->{phone},
+                message => "Заказ №$order->{id} сформирован и передан в службу доставки.",
+            );
+
+            # Отправка заказа водителю
+            my %letter = (
+                to          => vars->{glob_vars}->{shop}->{email},
+                subject     => "Новый заказ (№ $order->{id})",
+                body        => $body,
+            );
+
+            func::email(%letter);
+        }
+
+        return redirect "http://". request->host ."/admin/orders/process/";
+    }
+    elsif (params->{action} eq 'done') {
+        my $order = database->quick_select('orders', { id => params->{id}, status => [qw/pickup delivery/], managers_id => $loged->{id} });
+        if (!$order->{bills_id} and $order->{id}) {
+            database->quick_update('orders', { id => $order->{id} }, { status => 'done' });
+
+            func::send_sms(
+                phone   => $order->{phone},
+                message => "Заказ №$order->{id} завершен. Спасибо за покупку. Ваш Бизнес строй.",
+            );
         }
     }
     elsif (params->{action} eq 'bill') {

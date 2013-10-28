@@ -83,9 +83,7 @@ prefix '/admin/bill' => sub {
                 {}, { layout => 'blank.tpl' }
             );
 
-            # my $email_to = "vars->{glob_vars}->{email}, $cart->{buyer}->{email}";
-            my $email_to = 'p.vasilyev@corp.mail.ru';
-
+            my $email_to = "vars->{glob_vars}->{email}, $cart->{buyer}->{email}";
             func::email(
                 to      => $email_to,
                 subject => 'Счет',
@@ -97,7 +95,7 @@ prefix '/admin/bill' => sub {
                 { managers_id => vars->{loged}->{id}, id => params->{bills_id} },
                 { status => 'wait' }
             );
-
+=c
             # Добавляем в заказы
             database->quick_insert('orders', {
                 registered => func::now(),
@@ -110,6 +108,7 @@ prefix '/admin/bill' => sub {
                 fio => $cart->{buyer}->{fio},
                 email => $cart->{buyer}->{email},
             });
+=cut
             my $order_id = database->last_insert_id(undef, undef, undef, undef);
             # TODO: my $summary_buy = 0;
             for my $p (@{$cart->{products}}) {

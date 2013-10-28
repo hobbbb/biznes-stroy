@@ -4,6 +4,13 @@
     <div class="span12">
         <h3>[% orders_status.$status || 'Все' %]</h3>
 
+        [% IF vars.loged.acs.admin %]
+            <ul class="nav nav-pills">
+                <li [% 'class="active"' IF type != 'all' %]><a href="/admin/orders/[% status %]/">Свои</a></li>
+                <li [% 'class="active"' IF type == 'all' %]><a href="/admin/orders/[% status %]/?type=all">Все</a></li>
+            </ul>
+        [% END %]
+
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -19,7 +26,7 @@
                     <th>Продукты</th>
                     <th>Реквизиты</th>
                     [% IF vars.loged.acs.admin %]<th>Менеджер</th>[% END %]
-                    <th class="span1"></th>
+                    <th class="span3"></th>
                 </tr>
             </thead>
             <tbody>
@@ -49,29 +56,44 @@
                     [% END %]
                     <td rowspan="[% i.product_list.size + 1 %]">
                         [% IF status == 'new' %]
-                            <div><a href="javascript: void(0)" data-url="/admin/orders/to/process/[% i.id %]/" class="js_order_process"><i class="icon-folder-open" title="Взять в обработку"></i></a></div>
-                            <div><a href="javascript: void(0)" data-url="/admin/orders/del/[% i.id %]/" class="js_delete"><i class="icon-trash"></i></a></div>
+                            <div><a href="javascript: void(0)" data-url="/admin/orders/to/process/[% i.id %]/" class="btn btn-mini span12 pd3 js_order_process">Взять в работу</a></div>
                         [% ELSIF status == 'process' %]
+                            <div><a href="javascript: void(0)" data-url="/admin/orders/to/cancel/[% i.id %]/" class="btn btn-mini span12 pd3 js_order_cancel"><i class="icon-remove"></i> Отменить</a></div>
                             [% IF i.bills_id %]
                                 [% IF i.bill.status == 'wait' %]
-                                    <div><a href="#modal_bill_payment" data-toggle="modal" class="js_order_bill_payment" data-orders_id="[% i.id %]"><i class="icon-ok" title="Оплатить и Завершить"></i></a></div>
+                                    [% IF 0 %]<div><a href="#modal_bill_payment" data-toggle="modal" class="btn btn-mini span12 pd3 js_order_bill_payment" data-orders_id="[% i.id %]"><i class="icon-ok" title="Оплатить и Завершить заказ"></i></a></div>[% END %]
                                 [% END %]
-                                <div><a href="javascript: void(0)" data-url="/admin/orders/to/cancel/[% i.id %]/" class="js_order_cancel"><i class="icon-remove" title="Отменить"></i></a></div>
                             [% ELSE %]
                                 [% IF vars.loged.id == i.managers_id %]
-                                    <div><a href="javascript: void(0)" data-url="/admin/orders/to/new/[% i.id %]/" class="js_order_new"><i class="icon-folder-close" title="Отменить обработку"></i></a></div>
-                                    <div><a href="javascript: void(0)" data-url="/admin/orders/to/done/[% i.id %]/" class="js_order_done"><i class="icon-ok" title="Завершить"></i></a></div>
-                                    <div><a href="javascript: void(0)" data-url="/admin/orders/to/cancel/[% i.id %]/" class="js_order_cancel"><i class="icon-remove" title="Отменить"></i></a></div>
-                                    <div><a href="/admin/orders/to/bill/[% i.id %]/"><i class="icon-list-alt" title="Выставить счет"></i></a></div>
+                                    <!-- <div><a href="javascript: void(0)" data-url="/admin/orders/to/new/[% i.id %]/" class="btn btn-mini span12 pd3 js_order_new"><i class="icon-folder-close" title="Отменить обработку заказа"></i></a></div> -->
+                                    <div><a href="/admin/orders/to/bill/[% i.id %]/" class="btn btn-mini span12 pd3">Выставить счет</a></div>
+                                    [% IF i.shipping == 'self' %]
+                                        <div><a href="/admin/orders/to/pickup/[% i.id %]/" class="btn btn-mini span12 pd3">В самовывоз</a></div>
+                                    [% ELSE %]
+                                        <div><a href="/admin/orders/to/delivery/[% i.id %]/" class="btn btn-mini span12 pd3">В доставку</a></div>
+                                    [% END %]
                                 [% END %]
-                                [% IF vars.loged.acs.admin %]<div><a href="#modal_to_manager" data-toggle="modal" class="js_to_manager" data-orders_id="[% i.id %]" data-managers_id="[% i.managers_id %]"><i class="icon-random" title="Передать в обработку"></i></a></div>[% END %]
+
+                                [% IF vars.loged.acs.admin %]
+                                    <div><a href="#modal_to_manager" data-toggle="modal" class="btn btn-mini span12 pd3 js_to_manager" data-orders_id="[% i.id %]" data-managers_id="[% i.managers_id %]">Передать другому</a></div>
+                                [% END %]
                             [% END %]
-                            <div><a href="javascript: void(0)" data-url="/admin/orders/del/[% i.id %]/" class="js_delete"><i class="icon-trash"></i></a></div>
-                    [% END %]
+                        [% ELSIF status == 'pickup' OR status == 'delivery' %]
+                            [% IF vars.loged.acs.admin OR vars.loged.acs.driver %]
+                                <div><a href="javascript: void(0)" data-url="/admin/orders/to/done/[% i.id %]/" class="btn btn-large span12 pd3 js_order_done"><i class="icon-ok"></i> Завершить</a></div>
+                            [% END %]
+                        [% END %]
+
+                        [% UNLESS status == 'pickup' OR status == 'delivery' %]
+                            <div><a href="javascript: void(0)" data-url="/admin/orders/to/cancel/[% i.id %]/?reason=not_available" class="btn btn-mini span12 pd3 js_order_cancel"><i class="icon-remove"></i> Нет в наличии</a></div>
+                            [% IF vars.loged.acs.admin %]
+                                <div><a href="javascript: void(0)" data-url="/admin/orders/del/[% i.id %]/" class="btn btn-mini span12 pd3 js_delete"><i class="icon-trash"></i> Удалить</a></div>
+                            [% END %]
+                        [% END %]
                     </td>
                 </tr>
                 [% FOR p = i.product_list; NEXT IF loop.first; SET itogo = itogo + p.price * p.quantity; %]
-                    <tr [% 'style="background-color: #F5F5F5;"' IF odd %]>
+                    <tr [% 'style="background-color: #F5F5F5;"' IF odd %] class="js_linked_del_[% i.id %]">
                         <td><a href="/products/[% p.products_id %]/" target="_blank">[% p.name %]</a></td>
                         <td>[% p.supplier || '-' %]</td>
                         <td>[% p.quantity %]</td>

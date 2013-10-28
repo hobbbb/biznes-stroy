@@ -64,7 +64,7 @@ sub make_alias {
 sub email {
     my %params = @_;
 
-    $params{to} = 'p.vasilyev@corp.mail.ru' if config->{environment} ne 'production';
+    $params{to} = 'p.vasilyev@corp.mail.ru, vvd@programmex.ru' if config->{environment} ne 'production';
 
     utf8::encode($params{body});
     $params{$_} = encode('MIME-Header', $params{$_}) for qw(to from subject);
@@ -97,6 +97,8 @@ sub email {
 sub send_sms {
     my %params = @_;
     return unless ($params{phone} and $params{message});
+
+    $params{phone} = '9035082656' if config->{environment} ne 'production';
 
     my $url = 'http://www.smstraffic.ru/multi.php';
 
