@@ -58,7 +58,7 @@
                         [% IF status == 'new' %]
                             <div><a href="javascript: void(0)" data-url="/admin/orders/to/process/[% i.id %]/" class="btn btn-mini span12 pd3 js_order_process">Взять в работу</a></div>
                         [% ELSIF status == 'process' %]
-                            <div><a href="javascript: void(0)" data-url="/admin/orders/to/cancel/[% i.id %]/" class="btn btn-mini span12 pd3 js_order_cancel"><i class="icon-remove"></i> Отменить</a></div>
+                            [% INCLUDE _cancel %]
                             [% IF i.bills_id %]
                                 [% IF i.bill.status == 'wait' %]
                                     [% IF 0 %]<div><a href="#modal_bill_payment" data-toggle="modal" class="btn btn-mini span12 pd3 js_order_bill_payment" data-orders_id="[% i.id %]"><i class="icon-ok" title="Оплатить и Завершить заказ"></i></a></div>[% END %]
@@ -78,16 +78,21 @@
                                     <div><a href="#modal_to_manager" data-toggle="modal" class="btn btn-mini span12 pd3 js_to_manager" data-orders_id="[% i.id %]" data-managers_id="[% i.managers_id %]">Передать другому</a></div>
                                 [% END %]
                             [% END %]
-                        [% ELSIF status == 'pickup' OR status == 'delivery' %]
+                        [% ELSIF status == 'pickup' %]
+                            [% IF vars.loged.id == i.managers_id %]
+                                [% INCLUDE _cancel %]
+                                [% INCLUDE _done %]
+                            [% END %]
+                        [% ELSIF status == 'delivery' %]
                             [% IF vars.loged.acs.admin OR vars.loged.acs.driver %]
-                                <div><a href="javascript: void(0)" data-url="/admin/orders/to/done/[% i.id %]/" class="btn btn-large span12 pd3 js_order_done"><i class="icon-ok"></i> Завершить</a></div>
+                                [% INCLUDE _done big = 1 %]
                             [% END %]
                         [% END %]
 
                         [% UNLESS status == 'pickup' OR status == 'delivery' %]
-                            <div><a href="javascript: void(0)" data-url="/admin/orders/to/cancel/[% i.id %]/?reason=not_available" class="btn btn-mini span12 pd3 js_order_cancel"><i class="icon-remove"></i> Нет в наличии</a></div>
+                            [% INCLUDE _not_available %]
                             [% IF vars.loged.acs.admin %]
-                                <div><a href="javascript: void(0)" data-url="/admin/orders/del/[% i.id %]/" class="btn btn-mini span12 pd3 js_delete"><i class="icon-trash"></i> Удалить</a></div>
+                                [% INCLUDE _delete %]
                             [% END %]
                         [% END %]
                     </td>
@@ -124,6 +129,22 @@
         </table>
     </div>
 </div>
+
+[% BLOCK _cancel %]
+    <div><a href="javascript: void(0)" data-url="/admin/orders/to/cancel/[% i.id %]/" class="btn btn-mini span12 pd3 js_order_cancel"><i class="icon-remove"></i> Отменить</a></div>
+[% END %]
+
+[% BLOCK _done %]
+    <div><a href="javascript: void(0)" data-url="/admin/orders/to/done/[% i.id %]/" class="btn btn-[% big ? 'large' : 'mini' %] span12 pd3 js_order_done"><i class="icon-ok"></i> Завершить</a></div>
+[% END %]
+
+[% BLOCK _delete %]
+    <div><a href="javascript: void(0)" data-url="/admin/orders/del/[% i.id %]/" class="btn btn-mini span12 pd3 js_delete"><i class="icon-trash"></i> Удалить</a></div>
+[% END %]
+
+[% BLOCK _not_available %]
+    <div><a href="javascript: void(0)" data-url="/admin/orders/to/cancel/[% i.id %]/?reason=not_available" class="btn btn-mini span12 pd3 js_order_cancel"><i class="icon-remove"></i> Нет в наличии</a></div>
+[% END %]
 
 <div id="modal_bill_payment" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
     <form class="form-horizontal" method="post" action="">

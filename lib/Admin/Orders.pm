@@ -104,7 +104,7 @@ get '/to/:action/:id/' => sub {
 
             func::send_sms(
                 phone   => $order->{phone},
-                message => "Заказ №$order->{id} доставлен на точку самовывоза: рынок мельница.",
+                message => "Заказ №$order->{id} доставлен на точку самовывоза: рынок мельница. Адрес: МКАД 41 км., ряд И8-5\\6, тел. (495)2150307",
             );
         }
 
@@ -140,8 +140,17 @@ get '/to/:action/:id/' => sub {
         return redirect "http://". request->host ."/admin/orders/process/";
     }
     elsif (params->{action} eq 'done') {
-        my $order = database->quick_select('orders', { id => params->{id}, status => [qw/pickup delivery/], managers_id => $loged->{id} });
+        my $order = database->quick_select('orders', { id => params->{id}, status => [qw/pickup delivery/] });
         if (!$order->{bills_id} and $order->{id}) {
+            my $check;
+            if ($order->{status} eq 'pickup' and $order->{managers_id} == $loged->{id}) {
+                $check = 1;
+            }
+            elsif ($order->{status} eq 'delivery') {
+                $check = 1;
+            }
+            return unless $check;
+
             database->quick_update('orders', { id => $order->{id} }, { status => 'done' });
 
             func::send_sms(
