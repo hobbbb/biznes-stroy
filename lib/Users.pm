@@ -182,17 +182,19 @@ sub check_auth {
             cookie code => '', expires => '0';
             return;
         }
+
+        my @roles = qw/admin manager content driver/;
         if ($user->{role}) {
             if ($user->{role} eq 'admin') {
-                $user->{acs}->{admin} = 1;
-                $user->{acs}->{manager} = 1;
-                $user->{acs}->{content} = 1;
+                map { $user->{acs}->{$_} = 1 } @roles;
             }
-            elsif ($user->{role} eq 'manager') {
-                $user->{acs}->{manager} = 1;
-            }
-            elsif ($user->{role} eq 'content') {
-                $user->{acs}->{content} = 1;
+            else {
+                for my $r (@roles) {
+                    if ($user->{role} eq $r) {
+                        $user->{acs}->{$r} = 1;
+                        $user->{acs}->{"$r\_only"} = 1;
+                    }
+                }
             }
         }
     }
@@ -205,7 +207,11 @@ sub check_auth {
         if (request->path_info ne '/admin/') {
             my $access = 0;
             if ($user->{acs}->{manager}) {
-                for (qw/orders bill search/) {
+                for (qw!
+                        orders
+                        bill
+                        search
+                    !) {
                     if (request->path_info =~ m!^/admin/$_!) {
                         $access = 1;
                         last;
@@ -213,7 +219,23 @@ sub check_auth {
                 }
             }
             if ($user->{acs}->{content}) {
-                for (qw/catalog categories products/) {
+                for (qw!
+                        catalog
+                        categories
+                        products
+                        content
+                    !) {
+                    if (request->path_info =~ m!^/admin/$_!) {
+                        $access = 1;
+                        last;
+                    }
+                }
+            }
+            if ($user->{acs}->{driver}) {
+                for (qw!
+                        orders/delivery
+                        orders/to/done
+                    !) {
                     if (request->path_info =~ m!^/admin/$_!) {
                         $access = 1;
                         last;

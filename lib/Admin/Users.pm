@@ -16,12 +16,12 @@ any ['get', 'post'] => '/' => sub {
         type    => params->{type} || 'all',
     };
 
-    my $where = {};
+    my $where;
     if ($p->{type} eq 'normal') {
         $where->{role} = undef;
     }
     elsif ($p->{type} eq 'tech') {
-        $where->{role} = ['admin', 'manager'];
+        $where = 'role IS NOT NULL';
     }
     elsif ($p->{type} eq 'partner') {
         $where->{is_partner} = 1;
@@ -29,6 +29,7 @@ any ['get', 'post'] => '/' => sub {
     elsif (grep(/^$p->{type}$/, ('ph', 'ur'))) {
         $where->{type} = $p->{type};
     }
+    $where ||= {};
 
     $p->{users} = [ database->quick_select('users', $where) ];
     for (@{$p->{users}}) {

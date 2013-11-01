@@ -64,17 +64,21 @@
                             </ul>
                         </li>
                     [% END %]
-                    [% IF vars.loged.acs.admin %]
+                    [% IF vars.loged.acs.content %]
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Разное <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/admin/content/">Информационные страницы</a></li>
-                                <li><a href="/admin/footer_content/">Информационные страницы для футера</a></li>
-                                <li><a href="/admin/biznes_stroy/">Бизнес-строй это</a></li>
-                                <li><a href="/admin/users/">Пользователи</a></li>
-                                <li><a href="/admin/backup/">Backup / Restore</a></li>
+                                [% IF vars.loged.acs.admin %]
+                                    <li><a href="/admin/footer_content/">Информационные страницы для футера</a></li>
+                                    <li><a href="/admin/biznes_stroy/">Бизнес-строй это</a></li>
+                                    <li><a href="/admin/users/">Пользователи</a></li>
+                                    <li><a href="/admin/backup/">Backup / Restore</a></li>
+                                [% END %]
                             </ul>
                         </li>
+                    [% END %]
+                    [% IF vars.loged.acs.admin %]
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Управление <b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -101,10 +105,12 @@
                         </li>
                     [% END %]
                 </ul>
-                <form class="navbar-search pull-right" action="/admin/search/">
-                    <input type="text" class="input-medium search-query" name="search_word" value="[% search_word | html %]" placeholder="Товар">
-                    <button type="submit" class="btn-inverse">Поиск</button>
-                </form>
+                [% UNLESS vars.loged.acs.driver_only %]
+                    <form class="navbar-search pull-right" action="/admin/search/">
+                        <input type="text" class="input-medium search-query" name="search_word" value="[% search_word | html %]" placeholder="Товар">
+                        <button type="submit" class="btn-inverse">Поиск</button>
+                    </form>
+                [% END %]
             </div><!--/.nav-collapse -->
         </div>
         </div>

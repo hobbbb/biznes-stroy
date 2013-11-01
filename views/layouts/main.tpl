@@ -60,7 +60,9 @@
                                 Здравствуйте, [% vars.loged.fio %]<br>
                                 <a class="auth-link" href="/auth/lk/"><span>Мои данные</span></a> |
                                 <a href="/auth/logout/"><span>Выход</span></a>
-                                [% IF vars.loged.acs.keys %]
+                                [% IF vars.loged.acs.driver_only %]
+                                    | <a href="/driver/"><span>Водитель</span></a>
+                                [% ELSIF vars.loged.acs.keys %]
                                     | <a href="/admin/"><span>Админка</span></a>
                                 [% END %]
                             [% ELSE %]

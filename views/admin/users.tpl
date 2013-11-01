@@ -79,6 +79,7 @@
                                 <option value="">-- Не выбрано --</option>
                                 <option value="manager" [% 'selected' IF form.role == 'manager' %]>Менеджер</option>
                                 <option value="content" [% 'selected' IF form.role == 'content' %]>Контентщик</option>
+                                <option value="driver" [% 'selected' IF form.role == 'driver' %]>Водитель</option>
                             [% END %]
                         </select>
                     </div>

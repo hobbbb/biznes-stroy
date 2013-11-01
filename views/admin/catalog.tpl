@@ -35,7 +35,9 @@
                     <th>Кол-во категорий</th>
                     <th>Кол-во товаров</th>
                     <th class="span1"></th>
-                    <th class="span1"></th>
+                    [% IF vars.loged.acs.admin %]
+                        <th class="span1"></th>
+                    [% END %]
                 </tr>
             </thead>
             <tbody class="js_sortable" data-script="/admin/categories/">
@@ -47,7 +49,9 @@
                     <td>[% c.categories_cnt %]</td>
                     <td>[% c.products_cnt %]</td>
                     <td><a href="/admin/categories/edit/[% c.id %]/"><i class="icon-pencil"></i></a></td>
-                    <td><a href="javascript: void(0)" data-url="/admin/categories/del/[% c.id %]/" class="js_delete"><i class="icon-trash"></i></a></td>
+                    [% IF vars.loged.acs.admin %]
+                        <td><a href="javascript: void(0)" data-url="/admin/categories/del/[% c.id %]/" class="js_delete"><i class="icon-trash"></i></a></td>
+                    [% END %]
                 </tr>
             [% END %]
             </tbody>
@@ -64,7 +68,9 @@
                     <th>Цена</th>
                     <th>Артикул</th>
                     <th class="span1"></th>
-                    <th class="span1"></th>
+                    [% IF vars.loged.acs.admin %]
+                        <th class="span1"></th>
+                    [% END %]
                 </tr>
             </thead>
             <tbody class="js_sortable" data-script="/admin/products/">
@@ -76,7 +82,9 @@
                     <td>[% p.price %]</td>
                     <td>[% p.article %]</td>
                     <td><a href="/admin/products/edit/[% p.id %]/"><i class="icon-pencil"></i></a></td>
-                    <td><a href="javascript: void(0)" data-url="/admin/products/del/[% p.id %]/" class="js_delete"><i class="icon-trash"></i></a></td>
+                    [% IF vars.loged.acs.admin %]
+                        <td><a href="javascript: void(0)" data-url="/admin/products/del/[% p.id %]/" class="js_delete"><i class="icon-trash"></i></a></td>
+                    [% END %]
                 </tr>
             [% END %]
             </tbody>

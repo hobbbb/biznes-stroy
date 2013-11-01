@@ -19,13 +19,13 @@
                     <th>Поставщик</th>
                     <th>Кол-во</th>
                     <th>Цена</th>
-                    <th>Время</th>
+                    [% '<th>Время</th>' UNLESS vars.loged.acs.driver_only %]
                     <th>Доставка / Оплата</th>
                     <th>Контакты</th>
                     <th>Комментарии</th>
                     <th>Продукты</th>
-                    <th>Реквизиты</th>
-                    [% IF vars.loged.acs.admin %]<th>Менеджер</th>[% END %]
+                    [% '<th>Реквизиты</th>' UNLESS vars.loged.acs.driver_only %]
+                    [% '<th>Менеджер</th>' IF vars.loged.acs.admin %]
                     <th class="span3"></th>
                 </tr>
             </thead>
@@ -40,7 +40,9 @@
                     <td>[% i.product_list.0.supplier || '-' %]</td>
                     <td>[% i.product_list.0.quantity %]</td>
                     <td>[% i.product_list.0.price %]</td>
-                    <td rowspan="[% i.product_list.size + 1 %]">[% i.registered %]</td>
+                    [% UNLESS vars.loged.acs.driver_only %]
+                        <td rowspan="[% i.product_list.size + 1 %]">[% i.registered %]</td>
+                    [% END %]
                     <td rowspan="[% i.product_list.size + 1 %]">[% shipping.${i.shipping} %]<br>[% payment.${i.payment} %]</td>
                     <td rowspan="[% i.product_list.size + 1 %]">
                         [% i.phone | html %]<br>
@@ -50,7 +52,9 @@
                     </td>
                     <td rowspan="[% i.product_list.size + 1 %]">[% i.comments | html | replace('\n', '<br>') %]</td>
                     <td rowspan="[% i.product_list.size + 1 %]">[% i.products | html | replace('\n', '<br>') %]</td>
-                    <td rowspan="[% i.product_list.size + 1 %]">[% i.file ? '<a href="/upload/orders/' _ i.file _ '" target="_blank">' _ i.file _ '</a>' : '-' %]</td>
+                    [% UNLESS vars.loged.acs.driver_only %]
+                        <td rowspan="[% i.product_list.size + 1 %]">[% i.file ? '<a href="/upload/orders/' _ i.file _ '" target="_blank">' _ i.file _ '</a>' : '-' %]</td>
+                    [% END %]
                     [% IF vars.loged.acs.admin %]
                         <td rowspan="[% i.product_list.size + 1 %]">[% i.manager.fio %]</td>
                     [% END %]

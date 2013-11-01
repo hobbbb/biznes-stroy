@@ -131,6 +131,12 @@ prefix '/admin' => sub {
     };
 };
 
+prefix '/driver' => sub {
+    get '/' => sub {
+        return forward '/admin/orders/delivery/';
+    };
+};
+
 sub fUpload {
     my %p = @_;
     $p{field} ||= 'image';

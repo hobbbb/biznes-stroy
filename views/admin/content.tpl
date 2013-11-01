@@ -19,7 +19,9 @@
                         <th>Алиас</th>
                         <th>Кол-во товаров</th>
                         <th class="span1"></th>
-                        <th class="span1"></th>
+                        [% IF vars.loged.acs.admin %]
+                            <th class="span1"></th>
+                        [% END %]
                     </tr>
                 </thead>
                 <tbody>
@@ -30,7 +32,9 @@
                         <td>[% content_alias.${i.alias} %]</td>
                         <td>[% i.products_cnt %]</td>
                         <td><a href="/admin/content/[% i.id %]/"><i class="icon-pencil"></i></a></td>
-                        <td>[% UNLESS i.alias %]<a href="javascript: void(0)" data-url="/admin/content/del/[% i.id %]/" class="js_delete"><i class="icon-trash"></i></a>[% END %]</td>
+                        [% IF vars.loged.acs.admin %]
+                            <td>[% UNLESS i.alias %]<a href="javascript: void(0)" data-url="/admin/content/del/[% i.id %]/" class="js_delete"><i class="icon-trash"></i></a>[% END %]</td>
+                        [% END %]
                     </tr>
                 [% END %]
                 </tbody>

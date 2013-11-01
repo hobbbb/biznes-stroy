@@ -82,6 +82,8 @@ any ['get', 'post'] => qr{ /(?<id>\d+)/(?<link_products>products)?/?$ }x => sub 
 };
 
 ajax '/del/:id/' => sub {
+    return unless vars->{loged}->{acs}->{admin};
+
     my $content = database->quick_select('content', { id => params->{id}});
     if ($content->{id}) {
         database->quick_delete('content', { id => $content->{id} });

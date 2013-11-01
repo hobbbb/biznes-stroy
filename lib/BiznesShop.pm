@@ -19,7 +19,7 @@ hook before => sub {
         cookie _openstat => 1, http_only => 0, expires => '1 month';
     }
 
-    if (request->path_info =~ m!^/admin!) {
+    if (request->path_info =~ m!^/(admin|driver)!) {
         set layout => 'admin.tpl';
     }
     else {

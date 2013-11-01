@@ -94,6 +94,8 @@ prefix '/admin/categories' => sub {
     };
 
     ajax '/del/:id/' => sub {
+        return unless vars->{loged}->{acs}->{admin};
+
         my $p = {};
         my $category = database->quick_select('categories', { id => params->{id} });
         if ($category->{id}) {
@@ -200,6 +202,8 @@ prefix '/admin/products' => sub {
     };
 
     ajax '/del/:id/' => sub {
+        return unless vars->{loged}->{acs}->{admin};
+
         my $p = {};
         my $product = database->quick_select('products', { id => params->{id} });
         if ($product->{id}) {

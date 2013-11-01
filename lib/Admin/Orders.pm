@@ -32,7 +32,12 @@ get '/:status/' => sub {
         my $where = { status => $p->{status} };
         if ($p->{status} ne 'new') {
             $where->{managers_id} = $loged->{id};
-            if ($p->{type} and $p->{type} eq 'all' and $loged->{role} eq 'admin') {
+
+            if ($loged->{acs}->{admin} and $p->{type} and $p->{type} eq 'all') {
+                delete $where->{managers_id};
+            }
+
+            if ($loged->{acs}->{driver_only} and $p->{status} eq 'delivery') {
                 delete $where->{managers_id};
             }
         }
@@ -192,7 +197,7 @@ ajax '/del/:id/' => sub {
         id => params->{id},
         status => ['new', 'process']
     };
-    $where->{users_id} = $loged->{id} if $loged->{role} eq 'manager';
+    $where->{users_id} = $loged->{id} if $loged->{acs}->{manager_only};
 
     my $order = database->quick_select('orders', $where);
     if ($order->{id}) {
@@ -214,7 +219,7 @@ post '/to/:action/:id/' => sub {
     my $loged = vars->{loged};
 
     if (params->{action} eq 'manager') {
-        if (params->{managers_id} and $loged->{role} eq 'admin') {
+        if (params->{managers_id} and $loged->{acs}->{admin}) {
             my $order = database->quick_select('orders', { id => params->{id}, bills_id => undef });
             if ($order->{id}) {
                 database->quick_update('orders', { id => $order->{id} }, { managers_id => params->{managers_id} });
