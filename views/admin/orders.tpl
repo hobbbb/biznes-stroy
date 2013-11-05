@@ -93,7 +93,7 @@
                             [% END %]
                         [% END %]
 
-                        [% UNLESS status == 'pickup' OR status == 'delivery' %]
+                        [% UNLESS status.grep('^pickup|delivery|done|cancel$').size %]
                             [% INCLUDE _not_available %]
                             [% IF vars.loged.acs.admin %]
                                 [% INCLUDE _delete %]
