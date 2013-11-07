@@ -65,6 +65,28 @@
             </div>
         </fieldset>
     </div>
+
+    [% IF vars.loged.acs.admin %]
+        <div class="span5">
+            <fieldset>
+                <legend>Цены</legend>
+                <div class="control-group [% 'error' IF err.retail_sum OR err.retail_percent %]">
+                    <label class="control-label" for="retail_sum">Розничная цена</label>
+                    <div class="controls">
+                        <input type="text" id="retail_sum" name="retail_sum" value="[% form.retail_sum | html %]" placeholder="Сумма" class="span6">
+                        <input type="text" id="retail_percent" name="retail_percent" value="[% form.retail_percent | html %]" placeholder="Процент" class="span6">
+                    </div>
+                </div>
+                <div class="control-group [% 'error' IF err.middle_sum OR err.middle_percent %]">
+                    <label class="control-label" for="middle_sum">Средняя цена</label>
+                    <div class="controls">
+                        <input type="text" id="middle_sum" name="middle_sum" value="[% form.middle_sum | html %]" placeholder="Сумма" class="span6">
+                        <input type="text" id="middle_percent" name="middle_percent" value="[% form.middle_percent | html %]" placeholder="Процент" class="span6">
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    [% END %]
     </form>
 </div>
 

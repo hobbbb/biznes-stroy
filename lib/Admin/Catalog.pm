@@ -82,6 +82,18 @@ prefix '/admin/categories' => sub {
                     );
                     delete $p->{form}->{image} unless defined $p->{form}->{image};
                     database->quick_update('categories', { id => $category->{id} }, $p->{form});
+
+                    if (exists $p->{form}->{middle_sum} or exists $p->{form}->{retail_sum}) {
+                        my $categories = _all_sub_categories($category->{id});
+                        my $where = scalar @$categories ? { id => $categories } : {};
+                        database->quick_update('categories', $where, {
+                            middle_sum      => $p->{form}->{middle_sum},
+                            middle_percent  => $p->{form}->{middle_percent},
+                            retail_sum      => $p->{form}->{retail_sum},
+                            retail_percent  => $p->{form}->{retail_percent},
+                        });
+                    }
+
                     redirect "http://". request->host ."/admin/catalog/$category->{parent_id}/";
                 }
             }
@@ -254,14 +266,35 @@ sub _check_category {
     my $params = shift;
     my ($form, $err) = ({},{});
 
-    for (qw/parent_id enabled name descr image seo_url seo_title seo_keywords seo_description/) {
-        $form->{$_} = $params->{$_};
+    for (qw/parent_id enabled name descr image middle_sum middle_percent retail_sum retail_percent
+            seo_url seo_title seo_keywords seo_description/
+    ) {
+        $form->{$_} = $params->{$_} if exists $params->{$_};
     }
     $form->{enabled} = $form->{enabled} ? 1 : 0;
     $form->{name}    = func::trim($form->{name});
     $form->{seo_url} = func::trim($form->{seo_url});
 
-    $err->{parent_id} = 1 if $form->{parent_id} !~ /^\d+$/;
+    for my $t (qw/middle retail/) {
+        for (qw/sum percent/) {
+            $form->{"$t\_$_"} = undef if exists $params->{"$t\_$_"} and !$params->{"$t\_$_"};
+        }
+        if (exists $form->{"$t\_sum"} and $form->{"$t\_sum"} and $form->{"$t\_sum"} !~ /^\d{1,8}(\.\d{1,2})?$/) {
+            $err->{"$t\_sum"} = 1;
+            next;
+        }
+        if (exists $form->{"$t\_percent"} and $form->{"$t\_percent"} and
+                ($form->{"$t\_percent"} !~ /^\d+$/ or $form->{"$t\_percent"} < 0 or $form->{"$t\_percent"} > 100)
+        ) {
+            $err->{"$t\_percent"} = 1;
+            next;
+        }
+        if (($form->{"$t\_sum"} and !$form->{"$t\_percent"}) or (!$form->{"$t\_sum"} and $form->{"$t\_percent"})) {
+            $err->{"$t\_sum"} = 1;
+        }
+    }
+
+    $err->{parent_id} = 1 if !exists $form->{parent_id} or $form->{parent_id} !~ /^\d+$/;
     $err->{name}      = 1 if length($form->{name}) < 3;
     $err->{image}     = 1 if $form->{image} and lc($form->{image}) !~ /(jpg|jpeg|png)$/;
 
