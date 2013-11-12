@@ -2200,3 +2200,15 @@ form .f_err { background-color: #ffd6d6; }
 .err { color: red; }
 .Requirement { font-weight: bold; color: red; }
 .dnone { display: none; }
+
+
+table.three_price {
+	width: 100%;
+}
+table.three_price th {
+	border: 1px solid black;
+}
+table.three_price td {
+	text-align: center;
+	border: 1px solid black;
+}

@@ -3,14 +3,24 @@
 <div class="item">
     <h1>[% product.name %]</h1>
     <div class="right">
-        <div class="price">
-            [% INCLUDE inc/buy_button.tpl product=product %]
-            <strong>[% product.sale_price || product.price %]</strong>
-            [% IF product.sale_price %]
+        [% IF product.sale_price %]
+            <div class="price">
+                [% INCLUDE inc/buy_button.tpl product=product %]
+                <strong>[% product.sale_price %]</strong>
                 Старая цена: <del><span>[% product.price %]</span></del>
-            [% END %]
-        </div>
-        <!-- end .price-->
+            </div>
+        [% ELSIF product.category.middle_percent || product.category.retail_percent %]
+            [% INCLUDE inc/three_prices.tpl product=product category=product.category %]
+            <br>
+            <div class="price">
+                [% INCLUDE inc/buy_button.tpl product=product %]
+            </div>
+        [% ELSE %]
+            <div class="price">
+                [% INCLUDE inc/buy_button.tpl product=product %]
+                <strong>[% product.price %]</strong>
+            </div>
+        [% END %]
 
         <ul class="info-pics">
             [% IF product.hit %]<li class="bg-hit">ХИТ ПРОДАЖ</li>[% END %]

@@ -223,6 +223,7 @@ get '/products/:id/' => sub {
     $p->{seo_keywords}      = $p->{product}->{seo_keywords};
     $p->{seo_description}   = $p->{product}->{seo_description};
     $p->{product}->{images} = [ database->quick_select('products_images', { products_id => $p->{product}->{id} }, { columns => [qw/image/], order_by => 'image' }) ];
+    $p->{product}->{category} = $category;
 
     return template 'product.tpl', $p;
 };

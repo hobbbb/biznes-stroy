@@ -92,13 +92,38 @@ $(document).ready(function(){
 
     $('.js_buy_button').click(function(){
         var id = $(this).data('product');
+        var quantity = $(this).data('qnt');
         $.ajax({
             type: "POST",
             url: "/shopping_cart/add/" + id + "/",
+            data: { qnt: quantity },
             success: function(ans) {
                 basket_state = basket_toggle(0);
             }
         });
+    });
+    $('.js_buy_qnt').on('change, keyup', function(){
+        if ($(this).val() > 0) {
+            var quantity = $(this).val();
+            var product_id = $(this).data('product');
+            $('.js_buy_button').each(function() {
+                if ($(this).data('product') == product_id) {
+                    $(this).data('qnt', quantity);
+                }
+            });
+            $('.js_buy_sum').each(function() {
+                var $el = $(this);
+                if ($el.data('product') == product_id) {
+                    $.ajax({
+                        url: '/get_product_price/',
+                        data: { id: product_id, qnt: quantity },
+                        success: function(price) {
+                            $el.html((price * quantity).toFixed(2));
+                        },
+                    });
+                }
+            });
+        }
     });
 
     // --------- search ----------
@@ -238,6 +263,7 @@ function cart_refresh() {
                 var sum = 0;
                 for (var i = 0; i < ans.length; i++) {
                     sum += ans[i]['qnt'] * ans[i]['price'];
+                    $('#price_' + ans[i]['id']).html(ans[i]['price']);
                 }
                 $('#js_shopping_cart_total').html(sum.toFixed(2));
 
@@ -280,3 +306,20 @@ function basket_toggle(state) {
 
     return state;
 }
+/*
+function get_product_price(product_id, product_qnt) {
+    var price = 0;
+    $.ajax({
+        url: '/get_product_price/',
+        data: { id: product_id, qnt: product_qnt },
+        dataType: "html",
+        success: function(ans) {
+// console.log(ans);
+            price = ans;
+        },
+    });
+console.log(price);
+
+    return price;
+}
+*/

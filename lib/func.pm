@@ -24,9 +24,29 @@ sub products_get_image {
 }
 
 sub product_price {
-    my $product = shift;
+    my ($product, $category, $qnt) = @_;
 
-    return $product->{sale_price} || $product->{price};
+    if ($product->{sale_price}) {
+        return $product->{sale_price};
+    }
+    elsif (($category->{middle_percent} || $category->{retail_percent}) and $qnt) {
+        my $retail_price = $product->{price} * (100 + $category->{retail_percent}) / 100;
+        my $middle_price = $product->{price} * (100 + $category->{middle_percent}) / 100;
+
+        my $rsum = $retail_price * $qnt;
+        if ($rsum >= $category->{retail_sum} and $rsum < $category->{middle_sum}) {
+            return $middle_price;
+        }
+        elsif ($rsum >= $category->{middle_sum}) {
+            return $product->{price};
+        }
+        else {
+            return $retail_price;
+        }
+    }
+    else {
+        return $product->{price};
+    }
 }
 
 sub generate {

@@ -12,19 +12,22 @@ prefix '/shopping_cart' => sub {
         my $shopping_cart = from_json($cart) if $cart;
         my $product = database->quick_select('products', { enabled => 1, id => params->{id} });
         if ($product->{id}) {
+            my $category = database->quick_select('categories', { id => $product->{categories_id} });
+            my $qnt = (params->{qnt} and params->{qnt} =~ /^\d+$/ and params->{qnt} > 0) ? params->{qnt} : 1;
+
             my $in_cart = 0;
             for (@$shopping_cart) {
                 if ($_->{id} == params->{id}) {
                     $in_cart = 1;
-                    $_->{qnt}++;
-                    $_->{price} = func::product_price($product);
+                    $_->{qnt} += $qnt;
+                    $_->{price} = func::product_price($product, $category, $_->{qnt});
                 }
             }
             unless ($in_cart) {
                 push @$shopping_cart, {
                     id      => $product->{id},
-                    qnt     => 1,
-                    price   => func::product_price($product),
+                    qnt     => $qnt,
+                    price   => func::product_price($product, $category, $qnt),
                 }
             }
         }
@@ -37,10 +40,12 @@ prefix '/shopping_cart' => sub {
         for my $id (@$ids) {
             my $product = database->quick_select('products', { enabled => 1, id => $id });
             if ($product->{id} and params->{"qnt_$id"}) {
+                my $category = database->quick_select('categories', { id => $product->{categories_id} });
+                my $qnt = params->{"qnt_$id"};
                 push @$shopping_cart, {
                     id      => $id,
-                    qnt     => params->{"qnt_$id"},
-                    price   => func::product_price($product),
+                    qnt     => $qnt,
+                    price   => func::product_price($product, $category, $qnt),
                 }
             }
         }
@@ -106,8 +111,9 @@ prefix '/shopping_cart' => sub {
         for (@$shopping_cart) {
             my $product = database->quick_select('products', { enabled => 1, id => $_->{id} });
             if ($product) {
+                my $category = database->quick_select('categories', { id => $product->{categories_id} });
                 $product->{qnt}   = $_->{qnt};
-                $product->{price} = func::product_price($product);
+                $product->{price} = func::product_price($product, $category, $product->{qnt});
                 $product->{image} = database->quick_lookup('products_images', { products_id => $product->{id} }, 'image');
                 push @{$p->{products}}, $product;
                 push @$real_cart, $_;
@@ -149,6 +155,17 @@ any ['post', 'get'] => '/cashless/' => sub {
     }
 
     template 'cashless.tpl', $p;
+};
+
+ajax '/get_product_price/' => sub {
+    return unless params->{qnt};
+
+    my $product = database->quick_select('products', { id => params->{id} });
+    return unless $product->{id};
+
+    my $category = database->quick_select('categories', { id => $product->{categories_id} });
+
+    return func::product_price($product, $category, params->{qnt});
 };
 
 

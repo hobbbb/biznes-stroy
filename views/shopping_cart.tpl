@@ -29,7 +29,7 @@
                             <input type="text" name="qnt_[% p.id %]" value="[% p.qnt %]" class="js_qnt" id="qnt_[% p.id %]">
                             <span class="plus js_plus" data-plus="qnt_[% p.id %]"></span>
                         </div></td>
-                        <td class="price">[% p.price %] руб.</td>
+                        <td class="price"><span id="price_[% p.id %]">[% p.price %]</span> руб.</td>
                         <td class="w1"><a class="delete js_del" href="javascript: void(0);"></a></td>
                     </tr>
                 [% END %]

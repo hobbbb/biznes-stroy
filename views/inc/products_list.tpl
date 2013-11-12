@@ -29,14 +29,24 @@
             </ul>
             <!-- end .info-pics-->
 
-            <div class="price">
-                [% IF p.sale_price %]
+            [% IF p.sale_price %]
+                <div class="price">
                     <div class="clearfix"><del><span>[% p.price %]</span></del> Старая цена:</div>
-                [% END %]
-                <strong>[% p.sale_price || p.price %]</strong>
-                [% INCLUDE inc/buy_button.tpl product=p %]
-            </div>
-            <!-- end .price-->
+                    <strong>[% p.sale_price %]</strong>
+                    [% INCLUDE inc/buy_button.tpl product=p %]
+                </div>
+            [% ELSIF category.middle_percent || category.retail_percent %]
+                [% INCLUDE inc/three_prices.tpl product=p category=category %]
+                <br>
+                <div class="price">
+                    [% INCLUDE inc/buy_button.tpl product=p %]
+                </div>
+            [% ELSE %]
+                <div class="price">
+                    <strong>[% p.price %]</strong>
+                    [% INCLUDE inc/buy_button.tpl product=p %]
+                </div>
+            [% END %]
         </div>
     </div>
     <!-- end .catalog-item-->
