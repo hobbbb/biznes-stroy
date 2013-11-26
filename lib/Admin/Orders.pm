@@ -107,9 +107,11 @@ get '/to/:action/:id/' => sub {
         if (!$order->{bills_id} and $order->{id}) {
             database->quick_update('orders', { id => $order->{id} }, { status => 'pickup' });
 
+            my @t = localtime(time + 172800);
+            my $till = $t[3] . '-' . ($t[4] + 1) . '-' . ($t[5] + 1900);
             func::send_sms(
                 phone   => $order->{phone},
-                message => "Заказ №$order->{id} доставлен на точку самовывоза: рынок мельница. Адрес: МКАД 41 км., ряд И8-5\\6, тел. (495)2150307",
+                message => "Заказ №$order->{id} доставлен на точку самовывоза: рынок мельница. Адрес: МКАД 41 км., ряд И8-5\\6, тел. (495)2150307. Хранение до $till включительно.",
             );
         }
 
