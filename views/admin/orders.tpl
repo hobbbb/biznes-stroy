@@ -31,7 +31,7 @@
             </thead>
             <tbody>
             [% FOR i = orders;
-                IF i.product_list.size; SET itogo = i.product_list.0.price * i.product_list.0.quantity; END;
+                SET itogo = func.order_itogo(i.id);
                 SET odd = loop.index % 2 == 0 ? 1 : 0;
             %]
                 <tr [% 'style="background-color: #F5F5F5;"' IF odd %] data-linked_del="[% i.id %]">
@@ -74,7 +74,7 @@
                                     [% IF i.shipping == 'self' %]
                                         <div><a href="/admin/orders/to/pickup/[% i.id %]/" class="btn btn-mini span12 pd3">В самовывоз</a></div>
                                     [% ELSE %]
-                                        <div><a href="/admin/orders/to/delivery/[% i.id %]/" class="btn btn-mini span12 pd3">В доставку</a></div>
+                                        <div><a href="#modal_to_delivery" data-toggle="modal" class="btn btn-mini span12 pd3 js_to_delivery" data-orders_id="[% i.id %]">В доставку</a></div>
                                     [% END %]
                                 [% END %]
 
@@ -101,7 +101,7 @@
                         [% END %]
                     </td>
                 </tr>
-                [% FOR p = i.product_list; NEXT IF loop.first; SET itogo = itogo + p.price * p.quantity; %]
+                [% FOR p = i.product_list; NEXT IF loop.first; %]
                     <tr [% 'style="background-color: #F5F5F5;"' IF odd %] class="js_linked_del_[% i.id %]">
                         <td><a href="/products/[% p.products_id %]/" target="_blank">[% p.name %]</a></td>
                         <td>[% p.supplier || '-' %]</td>
@@ -112,19 +112,8 @@
                 [% IF i.product_list.size; %]
                 <tr class="js_linked_del_[% i.id %]">
                     <td colspan="4" style="font-weight: bold; text-align: right; [% 'background-color: #F5F5F5;' IF odd %]">
-                        <div>
-                            [% IF i.discount %]
-                                Скидка: [% i.discount %]%; Итого: [% itogo - itogo * i.discount / 100 %]
-                            [% ELSE %]
-                                Итого: [% itogo %] руб.
-                            [% END %]
-                        </div>
-                        <div>
-                            [% 'Итого с доставкой: ' _ (itogo + (vars.glob_vars.delivery_price || 0)) _ ' руб.'
-                                IF i.shipping == 'delivery' %]
-                            [% 'Итого с доставкой: ' _ (itogo + (vars.glob_vars.delivery_price || 0) + (vars.glob_vars.delivery_mkad_price || 0) * i.mkad) _ ' руб.'
-                                IF i.shipping == 'delivery_mkad' %]
-                        </div>
+                        <div>Итого: [% itogo.overal %] руб.</div>
+                        <div>[% 'Итого с доставкой: ' _ itogo.with_delivery _ ' руб.' IF itogo.with_delivery %]</div>
                     </td>
                 </tr>
                 [% END %]
@@ -188,6 +177,28 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary">Передать</button>
+        </div>
+    </form>
+</div>
+
+<div id="modal_to_delivery" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <form class="form-horizontal" method="get" action="">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Дата доставки</h3>
+        </div>
+        <div class="modal-body">
+            <div class="control-group">
+                <label class="control-label" for="date">Дата</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="text" id="date" name="date" value="" class="datepicker">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary">В доставку</button>
         </div>
     </form>
 </div>

@@ -68,7 +68,7 @@ get '/to/:action/:id/' => sub {
 
             func::send_sms(
                 phone   => $order->{phone},
-                message => "Заказ №$order->{id} взят в работу. $loged->{fio}",
+                message => "Заказ №$order->{id} взят в работу. $loged->{fio}, +7$loged->{phone}",
             );
 
             return redirect "http://". request->host ."/admin/orders/process/";
@@ -111,7 +111,7 @@ get '/to/:action/:id/' => sub {
             my $till = $t[3] . '-' . ($t[4] + 1) . '-' . ($t[5] + 1900);
             func::send_sms(
                 phone   => $order->{phone},
-                message => "Заказ №$order->{id} доставлен на точку самовывоза: рынок мельница. Адрес: МКАД 41 км., ряд И8-5\\6, тел. (495)2150307. Хранение до $till включительно.",
+                message => "Заказ №$order->{id} доставлен на точку самовывоза: рынок мельница. Адрес: МКАД 41 км., ряд И8-5\\6, тел. +7(499)6537017. Хранение до $till включительно.",
             );
         }
 
@@ -119,7 +119,7 @@ get '/to/:action/:id/' => sub {
     }
     elsif (params->{action} eq 'delivery') {
         my $order = database->quick_select('orders', { id => params->{id}, status => 'process', shipping => [qw/delivery delivery_mkad/], managers_id => $loged->{id} });
-        if (!$order->{bills_id} and $order->{id}) {
+        if (params->{date} and !$order->{bills_id} and $order->{id}) {
             database->quick_update('orders', { id => $order->{id} }, { status => 'delivery' });
 
             my $product_list = [ database->quick_select('orders_products', { orders_id => $order->{id} }) ];
@@ -129,9 +129,11 @@ get '/to/:action/:id/' => sub {
                 {}, { layout => 'blank.tpl' }
             );
 
+            my $itogo = func::order_itogo($order->{id});
+
             func::send_sms(
                 phone   => $order->{phone},
-                message => "Заказ №$order->{id} сформирован и передан в службу доставки.",
+                message => "Заказ №$order->{id} сформирован и передан в службу доставки, +7(499)6537017. Сумма заказа $itogo->{with_delivery} руб, доставка до подъезда запланирована на " . params->{date},
             );
 
             # Отправка заказа водителю
@@ -162,7 +164,7 @@ get '/to/:action/:id/' => sub {
 
             func::send_sms(
                 phone   => $order->{phone},
-                message => "Заказ №$order->{id} завершен. Спасибо за покупку. Ваш Бизнес строй.",
+                message => "Заказ №$order->{id} завершен. Спасибо за покупку. Ваш Бизнес строй, +7(495)2150307",
             );
         }
     }

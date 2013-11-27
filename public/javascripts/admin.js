@@ -188,6 +188,10 @@ $(function() {
         $('#modal_to_manager').find('select[name="managers_id"]').val(managers_id);
         $('#modal_to_manager').find('form').attr('action', '/admin/orders/to/manager/' + orders_id + '/');
     });
+    $('.js_to_delivery').click(function(){
+        var orders_id = $(this).data('orders_id');
+        $('#modal_to_delivery').find('form').attr('action', '/admin/orders/to/delivery/' + orders_id + '/');
+    });
 });
 
 //------------------------------ Users -----------------------------

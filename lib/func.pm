@@ -49,6 +49,33 @@ sub product_price {
     }
 }
 
+sub order_itogo {
+    my $orders_id = shift;
+
+    my $order = database->quick_select('orders', { id => $orders_id });
+    my $products = [ database->quick_select('orders_products', { orders_id => $orders_id }) ];
+
+    my $itogo = {
+        overal => 0,
+    };
+    for my $p (@$products) {
+        $itogo->{overal} += $p->{quantity} * $p->{price};
+    }
+
+    if ($order->{discount}) {
+        $itogo->{overal} = $itogo->{overal} - $itogo->{overal} * $order->{discount} / 100;
+    }
+
+    if ($order->{shipping} eq 'delivery') {
+        $itogo->{with_delivery} = $itogo->{overal} + (vars->{glob_vars}->{delivery_price} || 0);
+    }
+    elsif ($order->{shipping} eq 'delivery_mkad') {
+        $itogo->{with_delivery} = $itogo->{overal} + (vars->{glob_vars}->{delivery_price} || 0) + (vars->{glob_vars}->{delivery_mkad_price} || 0) * $order->{mkad};
+    }
+
+    return $itogo;
+}
+
 sub generate {
     my $length = $_[0] || 50;
     my @table = ('A'..'Z','1'..'9','a'..'z','!','@','#','$','%','^','&','*','(',')');

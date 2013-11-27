@@ -1,4 +1,7 @@
-[% PROCESS inc/vars.tpl %]
+[%-
+    PROCESS inc/vars.tpl;
+    SET itogo = func.order_itogo(order.data.id);
+-%]
 
 Номер заказа: [% order.data.id %]<br>
 Доставка: [% shipping.${order.data.shipping} %]<br>
@@ -10,7 +13,7 @@
 [% 'Товары: ' _ order.data.products _ '<br>' IF order.data.products %]
 [% 'Скидка: ' _ order.data.discount _ '%<br>' IF order.data.discount %]
 
-[% SET itogo = 0; FOR p = order.product_list; SET itogo = itogo + (p.quantity * p.price); %]
+[% FOR p = order.product_list %]
     <p>
         Товар: [% p.name %]<br>
         [% IF p.manufacturer %]Производитель: [% p.manufacturer.name %]<br>[% END %]
@@ -20,11 +23,5 @@
     </p>
 [% END %]
 
-[% IF order.data.discount %]
-    Итого: [% itogo - itogo * order.data.discount / 100 %] руб.<br>
-[% ELSE %]
-    Итого: [% itogo %] руб.<br>
-[% END %]
-
-[% 'Итого с доставкой: ' _ (itogo + (vars.glob_vars.delivery_price || 0)) _ ' руб.' IF order.data.shipping == 'delivery' %]
-[% 'Итого с доставкой: ' _ (itogo + (vars.glob_vars.delivery_price || 0) + (vars.glob_vars.delivery_mkad_price || 0) * order.data.mkad) _ ' руб.' IF order.data.shipping == 'delivery_mkad' %]
+Итого: [% itogo.overal %] руб.<br>
+[% 'Итого с доставкой: ' _ itogo.with_delivery _ ' руб.' IF itogo.with_delivery %]
