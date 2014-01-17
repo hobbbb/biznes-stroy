@@ -8,7 +8,7 @@
     [% ELSE %]
         <p class="err [% 'dnone' UNLESS err.no_products OR !products.size %]" id="js_shopping_cart_empty">Нет ни одного товара для заказа</p>
 
-        <form action="" method="post" id="js_shopping_cart" [% 'class="dnone"' IF !products.size OR err.no_products %] enctype="multipart/form-data" onsubmit="yaCounterXXXXXX.reachGoal('ORDER1'); return true;">
+        <form action="" method="post" id="js_shopping_cart" [% 'class="dnone"' IF !products.size OR err.no_products %] enctype="multipart/form-data" onsubmit="yaCounter12609058.reachGoal('ORDER1'); return true;">
             <div class="clearfix">
                 <table class="cart">
                 [%
