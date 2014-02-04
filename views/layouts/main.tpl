@@ -100,7 +100,7 @@
 
                 <div class="wrap">
                     <div class="holder">
-                        <a class="link [% 'bg-orange' IF 0 %]" href="/categories/sale/"><span class="c"><span class="cell">
+                        <a class="link [% 'bg-orange' IF 0 %]" href="/cashless/"><span class="c"><span class="cell">
                             <!--[if lte IE 7]><span><span><![endif]-->РАСПРОДАЖА<!--[if lte IE 7]></span></span><![endif]-->
                         </span></span></a>
                     </div>
