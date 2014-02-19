@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=[% settings.charset %]" />
     <title>[% seo_title || 'biznes-stroy.ru' %]</title>
-    <meta name="description" content="[% seo_description || 'biznes-stroy.ru' %]" />
+    <meta name="description" content="[% seo_description || 'Бизнес строй - интернет  магазин по продаже электроинструмента, крепежа и садовой техники. Так же вы найдете в нашем магазине станки, ручной измерительный инструмент, лестницы стремянки и многое другое. Мы комплектуе строительные объекты.' %]" />
     <meta name="keywords" content="[% seo_keywords || 'biznes-stroy.ru' %]" />
 
     <link rel="stylesheet" type="text/css" href="/css/base.css" />
